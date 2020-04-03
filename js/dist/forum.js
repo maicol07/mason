@@ -223,7 +223,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var flarum_app__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(flarum_app__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var flarum_components_DiscussionHero__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! flarum/components/DiscussionHero */ "flarum/components/DiscussionHero");
 /* harmony import */ var flarum_components_DiscussionHero__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(flarum_components_DiscussionHero__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _components_FieldsViewer__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/FieldsViewer */ "./src/forum/components/FieldsViewer.js");
+/* harmony import */ var flarum_components_Composer__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! flarum/components/Composer */ "flarum/components/Composer");
+/* harmony import */ var flarum_components_Composer__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(flarum_components_Composer__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _components_FieldsViewer__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./components/FieldsViewer */ "./src/forum/components/FieldsViewer.js");
+
 
 
 
@@ -234,10 +237,30 @@ __webpack_require__.r(__webpack_exports__);
       return;
     }
 
-    items.add('flagrow-mason-fields', _components_FieldsViewer__WEBPACK_IMPORTED_MODULE_3__["default"].component({
+    items.add('flagrow-mason-fields', _components_FieldsViewer__WEBPACK_IMPORTED_MODULE_4__["default"].component({
       discussion: this.props.discussion
     }));
   });
+  Object(flarum_extend__WEBPACK_IMPORTED_MODULE_0__["override"])(flarum_components_Composer__WEBPACK_IMPORTED_MODULE_3___default.a.prototype, 'animateToPosition', function (original, position) {
+    // we need to detect if there are any mason fields present and if there are
+    // add their height to the default height of the composer window
+    var $composer = this.$().stop(true);
+    var composerHeight = $composer.outerHeight();
+    m.redraw(true);
+    $composer.show(); //const $composer = this.$();
+
+    var headerHeight = this.$('.ComposerBody-header').outerHeight();
+
+    if (position === flarum_components_Composer__WEBPACK_IMPORTED_MODULE_3___default.a.PositionEnum.NORMAL && composerHeight < headerHeight) {
+      this.height = headerHeight + composerHeight;
+      this.updateHeight();
+    }
+
+    return original(position);
+  }); // extend(Composer.prototype, 'maximumHeight', function () {
+  //     //console.log('4');
+  //     return 800;
+  // });
 });
 
 /***/ }),
@@ -894,7 +917,7 @@ function (_Component) {
 
       items.add('field-' + field.id(), m('.Mason-Field.Form-group', {
         className: flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.forum.attribute('flagrow.mason.labels-as-placeholders') ? 'Mason-Field--label-as-placeholder' : ''
-      }, [m('label', [field.icon() ? [flarum_helpers_icon__WEBPACK_IMPORTED_MODULE_2___default()(field.icon()), ' '] : null, field.name(), field.required() ? ' *' : null]), input, field.description() ? m('.helpText', field.description()) : null]));
+      }, [m('label', [field.icon() ? [flarum_helpers_icon__WEBPACK_IMPORTED_MODULE_2___default()(field.icon()), ' '] : null, field.name(), field.required() ? ' *' : null]), field.description() ? m('.helpText', field.description()) : null, input]));
     });
     return items;
   };
@@ -1457,6 +1480,17 @@ module.exports = flarum.core.compat['components/Button'];
 /***/ (function(module, exports) {
 
 module.exports = flarum.core.compat['components/CommentPost'];
+
+/***/ }),
+
+/***/ "flarum/components/Composer":
+/*!************************************************************!*\
+  !*** external "flarum.core.compat['components/Composer']" ***!
+  \************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = flarum.core.compat['components/Composer'];
 
 /***/ }),
 

@@ -108,8 +108,8 @@ export default class FieldsEditor extends Component {
                     field.name(),
                     (field.required() ? ' *' : null),
                 ]),
-                input,
                 (field.description() ? m('.helpText', field.description()) : null),
+                input,
             ]));
         });
 

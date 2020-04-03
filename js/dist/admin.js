@@ -1674,6 +1674,7 @@ function (_Component) {
   };
 
   _proto.config = function config() {
+    var self = this;
     Object(html5sortable_dist_html5sortable_es_js__WEBPACK_IMPORTED_MODULE_6__["default"])('.js-answers-container', {
       handle: '.js-answers-handle',
       items: '.js-answers-data'
