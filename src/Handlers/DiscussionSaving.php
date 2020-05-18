@@ -1,11 +1,11 @@
 <?php
 
-namespace Flagrow\Mason\Handlers;
+namespace RaafiRivero\Mason\Handlers;
 
-use Flagrow\Mason\Field;
-use Flagrow\Mason\Repositories\AnswerRepository;
-use Flagrow\Mason\Repositories\FieldRepository;
-use Flagrow\Mason\Validators\UserAnswerValidator;
+use RaafiRivero\Mason\Field;
+use RaafiRivero\Mason\Repositories\AnswerRepository;
+use RaafiRivero\Mason\Repositories\FieldRepository;
+use RaafiRivero\Mason\Validators\UserAnswerValidator;
 use Flarum\Discussion\Event\Saving;
 use Flarum\Foundation\ValidationException;
 use Flarum\User\Exception\PermissionDeniedException;
@@ -42,24 +42,24 @@ class DiscussionSaving
      */
     public function __invoke(Saving $event)
     {
-        $hasAnswersData = isset($event->data['relationships']['flagrowMasonAnswers']['data']);
+        $hasAnswersData = isset($event->data['relationships']['raafiriveroMasonAnswers']['data']);
 
         if ($event->discussion->exists) { // Discussion update
             // If we're updating a discussion, we only handle fields update if fields attribute is given
             // This skips cases like discussion renaming
             if ($hasAnswersData) {
-                if ($event->actor->can('updateFlagrowMasonAnswers', $event->discussion)) {
+                if ($event->actor->can('updateRaafiRiveroMasonAnswers', $event->discussion)) {
                     $this->fillOrUpdateFields($event);
                 } else {
                     throw new PermissionDeniedException;
                 }
             }
         } else { // Discussion creation
-            if ($event->actor->can('fillFlagrowMasonAnswers', $event->discussion)) {
+            if ($event->actor->can('fillRaafiRiveroMasonAnswers', $event->discussion)) {
                 $this->fillOrUpdateFields($event);
             } else if ($hasAnswersData) {
                 // Only throw a permission exception if fields data was included in the request
-                // Users not authorized to use the fields should not have a flagrowMasonAnswers relationship at all
+                // Users not authorized to use the fields should not have a raafiriveroMasonAnswers relationship at all
                 throw new PermissionDeniedException;
             }
         }
@@ -76,7 +76,7 @@ class DiscussionSaving
         $newAnswerIds = [];
         $answersPerField = [];
 
-        $answerRelations = Arr::get($event->data, 'relationships.flagrowMasonAnswers.data', []);
+        $answerRelations = Arr::get($event->data, 'relationships.raafiriveroMasonAnswers.data', []);
 
         foreach ($answerRelations as $answerRelation) {
             $answer = null;
@@ -104,7 +104,7 @@ class DiscussionSaving
 
                 $answer = $this->answers->findOrCreate($field, $content);
             } else {
-                throw new ValidationException([], ['flagrowMasonAnswers' => 'Invalid answer payload']);
+                throw new ValidationException([], ['raafiriveroMasonAnswers' => 'Invalid answer payload']);
             }
 
             if (!$event->actor->can('addToDiscussion', $answer)) {
@@ -127,7 +127,7 @@ class DiscussionSaving
         });
 
         $event->discussion->afterSave(function ($discussion) use ($newAnswerIds) {
-            $discussion->flagrowMasonAnswers()->sync($newAnswerIds);
+            $discussion->raafiriveroMasonAnswers()->sync($newAnswerIds);
         });
     }
 
@@ -148,7 +148,7 @@ class DiscussionSaving
         );
 
         if ($validator->fails()) {
-            throw new ValidationException([], ['flagrowMasonAnswers' => $validator->getMessageBag()->first($key)]);
+            throw new ValidationException([], ['raafiriveroMasonAnswers' => $validator->getMessageBag()->first($key)]);
         }
     }
 }

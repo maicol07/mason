@@ -1,10 +1,19 @@
 <?php
 
-namespace Flagrow\Mason;
+/*
+ * This file is part of raafirivero/mason.
+ *
+ * Forked from flagrow/mason
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
 
-use Flagrow\Mason\Extend\DiscussionAttributes;
-use Flagrow\Mason\Extend\ForumAttributes;
-use Flagrow\Mason\Extend\Policies;
+namespace RaafiRivero\Mason;
+
+use RaafiRivero\Mason\Extend\DiscussionAttributes;
+use RaafiRivero\Mason\Extend\ForumAttributes;
+use RaafiRivero\Mason\Extend\Policies;
 use Flarum\Extend;
 
 return [
@@ -16,17 +25,17 @@ return [
         ->js(__DIR__.'/js/dist/admin.js'),
     (new Extend\Routes('api'))
         // Fields
-        ->post('/flagrow/mason/fields/order', 'flagrow.mason.api.fields.order', Api\Controllers\FieldOrderController::class)
-        ->get('/flagrow/mason/fields', 'flagrow.mason.api.fields.index', Api\Controllers\FieldIndexController::class)
-        ->post('/flagrow/mason/fields', 'flagrow.mason.api.fields.store', Api\Controllers\FieldStoreController::class)
-        ->patch('/flagrow/mason/fields/{id:[0-9]+}', 'flagrow.mason.api.fields.update', Api\Controllers\FieldUpdateController::class)
-        ->delete('/flagrow/mason/fields/{id:[0-9]+}', 'flagrow.mason.api.fields.delete', Api\Controllers\FieldDeleteController::class)
+        ->post('/raafirivero/mason/fields/order', 'raafirivero.mason.api.fields.order', Api\Controllers\FieldOrderController::class)
+        ->get('/raafirivero/mason/fields', 'raafirivero.mason.api.fields.index', Api\Controllers\FieldIndexController::class)
+        ->post('/raafirivero/mason/fields', 'raafirivero.mason.api.fields.store', Api\Controllers\FieldStoreController::class)
+        ->patch('/raafirivero/mason/fields/{id:[0-9]+}', 'raafirivero.mason.api.fields.update', Api\Controllers\FieldUpdateController::class)
+        ->delete('/raafirivero/mason/fields/{id:[0-9]+}', 'raafirivero.mason.api.fields.delete', Api\Controllers\FieldDeleteController::class)
 
         // Answers
-        ->post('/flagrow/mason/fields/{id:[0-9]+}/answers/order', 'flagrow.mason.api.answers.order', Api\Controllers\AnswerOrderController::class)
-        ->post('/flagrow/mason/fields/{id:[0-9]+}/answers', 'flagrow.mason.api.answers.create', Api\Controllers\AnswerStoreController::class)
-        ->patch('/flagrow/mason/answers/{id:[0-9]+}', 'flagrow.mason.api.answers.update', Api\Controllers\AnswerUpdateController::class)
-        ->delete('/flagrow/mason/answers/{id:[0-9]+}', 'flagrow.mason.api.answers.delete', Api\Controllers\AnswerDeleteController::class),
+        ->post('/raafirivero/mason/fields/{id:[0-9]+}/answers/order', 'raafirivero.mason.api.answers.order', Api\Controllers\AnswerOrderController::class)
+        ->post('/raafirivero/mason/fields/{id:[0-9]+}/answers', 'raafirivero.mason.api.answers.create', Api\Controllers\AnswerStoreController::class)
+        ->patch('/raafirivero/mason/answers/{id:[0-9]+}', 'raafirivero.mason.api.answers.update', Api\Controllers\AnswerUpdateController::class)
+        ->delete('/raafirivero/mason/answers/{id:[0-9]+}', 'raafirivero.mason.api.answers.delete', Api\Controllers\AnswerDeleteController::class),
     (new Extend\Locales(__DIR__.'/resources/locale')),
     new ForumAttributes,
     new DiscussionAttributes,

@@ -5,7 +5,7 @@ use Illuminate\Database\Schema\Builder;
 
 return [
     'up' => function (Builder $schema) {
-        $schema->create('flagrow_mason_fields', function (Blueprint $table) {
+        $schema->create('raafirivero_mason_fields', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
             $table->string('description')->nullable();
@@ -21,6 +21,6 @@ return [
         });
     },
     'down' => function (Builder $schema) {
-        $schema->drop('flagrow_mason_fields');
+        $schema->drop('raafirivero_mason_fields');
     },
 ];

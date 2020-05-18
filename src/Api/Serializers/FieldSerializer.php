@@ -1,9 +1,9 @@
 <?php
 
-namespace Flagrow\Mason\Api\Serializers;
+namespace RaafiRivero\Mason\Api\Serializers;
 
-use Flagrow\Mason\Field;
-use Flagrow\Mason\Repositories\AnswerRepository;
+use RaafiRivero\Mason\Field;
+use RaafiRivero\Mason\Repositories\AnswerRepository;
 use Flarum\Api\Serializer\AbstractSerializer;
 use Tobscure\JsonApi\Collection;
 use Tobscure\JsonApi\Relationship;
@@ -27,7 +27,7 @@ class FieldSerializer extends AbstractSerializer
      */
     public function getType($model)
     {
-        return 'flagrow-mason-field';
+        return 'raafirivero-mason-field';
     }
 
     /**

@@ -1,8 +1,8 @@
 <?php
 
-namespace Flagrow\Mason\Api\Serializers;
+namespace RaafiRivero\Mason\Api\Serializers;
 
-use Flagrow\Mason\Answer;
+use RaafiRivero\Mason\Answer;
 use Flarum\Api\Serializer\AbstractSerializer;
 use Tobscure\JsonApi\Relationship;
 
@@ -26,7 +26,7 @@ class AnswerSerializer extends AbstractSerializer
      */
     public function getType($model)
     {
-        return 'flagrow-mason-answer';
+        return 'raafirivero-mason-answer';
     }
 
     /**

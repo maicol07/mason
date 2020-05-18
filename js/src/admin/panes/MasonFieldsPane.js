@@ -9,7 +9,7 @@ export default class MasonFieldsPane extends Component {
     init() {
         app.request({
             method: 'GET',
-            url: app.forum.attribute('apiUrl') + '/flagrow/mason/fields',
+            url: app.forum.attribute('apiUrl') + '/raafirivero/mason/fields',
         }).then(result => {
             app.store.pushPayload(result);
             m.redraw();
@@ -35,7 +35,7 @@ export default class MasonFieldsPane extends Component {
     }
 
     view() {
-        const fields = app.store.all('flagrow-mason-field');
+        const fields = app.store.all('raafirivero-mason-field');
 
         let fieldsList = [];
 
@@ -51,7 +51,7 @@ export default class MasonFieldsPane extends Component {
             });
 
         return m('.container', [
-            m('h2', app.translator.trans('flagrow-mason.admin.titles.fields')),
+            m('h2', app.translator.trans('raafirivero-mason.admin.titles.fields')),
             m('.Mason-Container', [
                 m('.js-fields-container', fieldsList),
                 FieldEdit.component({
@@ -59,7 +59,7 @@ export default class MasonFieldsPane extends Component {
                     field: null,
                 }),
             ]),
-            m('h2', app.translator.trans('flagrow-mason.admin.titles.settings')),
+            m('h2', app.translator.trans('raafirivero-mason.admin.titles.settings')),
             MasonSettings.component(),
         ]);
     }
@@ -67,7 +67,7 @@ export default class MasonFieldsPane extends Component {
     updateSort(sorting) {
         app.request({
             method: 'POST',
-            url: app.forum.attribute('apiUrl') + '/flagrow/mason/fields/order',
+            url: app.forum.attribute('apiUrl') + '/raafirivero/mason/fields/order',
             data: {
                 sort: sorting,
             },

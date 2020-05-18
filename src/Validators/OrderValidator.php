@@ -1,6 +1,6 @@
 <?php
 
-namespace Flagrow\Mason\Validators;
+namespace RaafiRivero\Mason\Validators;
 
 use Flarum\Foundation\AbstractValidator;
 
