@@ -80,6 +80,8 @@ raafirivero-mason:
                 Users will see this text above the custom fields in the editor and on the discussion.
             column-count: Number of columns when showing the fields
             n-columns: "{count} columns"
+            by-tag: Apply metadata to specific tags only
+            by-tag-name: Which tags get metadata?
             labels-as-placeholders: Show labels as placeholders in the form
             labels-as-placeholders-help: >
                 Fields will use less vertical space and icons won't be shown anymore.

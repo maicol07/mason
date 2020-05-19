@@ -4,6 +4,8 @@ namespace RaafiRivero\Mason\Extend;
 
 use RaafiRivero\Mason\Api\Serializers\FieldSerializer;
 use RaafiRivero\Mason\Repositories\FieldRepository;
+use RaafiRivero\Mason\Api\Serializers\ByTagSerializer;
+use RaafiRivero\Mason\Repositories\ByTagRepository;
 use Flarum\Api\Controller\ShowForumController;
 use Flarum\Api\Event\Serializing;
 use Flarum\Api\Event\WillGetData;
@@ -73,6 +75,7 @@ class ForumAttributes implements ExtenderInterface
             if ($canFill || $canSeeSome) {
                 $event->attributes['raafirivero.mason.fields-section-title'] = $settings->get('raafirivero.mason.fields-section-title', '');
                 $event->attributes['raafirivero.mason.column-count'] = (int) $settings->get('raafirivero.mason.column-count', 1);
+                $event->attributes['raafirivero.mason.by-tag'] = (bool) $settings->get('raafirivero.mason.by-tag', false);
             }
 
             if ($canFill) {

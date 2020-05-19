@@ -19,7 +19,7 @@ export default function () {
         items.add('raafirivero-mason-fields', AdminLinkButton.component({
             href: app.route('raafirivero-mason-fields'),
             icon: 'fas fa-dungeon',
-            children: 'Mason',
+            children: 'Mason Plus',
             description: app.translator.trans('raafirivero-mason.admin.menu.description'),
         }));
     });

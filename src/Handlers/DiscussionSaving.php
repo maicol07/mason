@@ -5,6 +5,7 @@ namespace RaafiRivero\Mason\Handlers;
 use RaafiRivero\Mason\Field;
 use RaafiRivero\Mason\Repositories\AnswerRepository;
 use RaafiRivero\Mason\Repositories\FieldRepository;
+use RaafiRivero\Mason\Repositories\ByTagRepository;
 use RaafiRivero\Mason\Validators\UserAnswerValidator;
 use Flarum\Discussion\Event\Saving;
 use Flarum\Foundation\ValidationException;
@@ -26,12 +27,17 @@ class DiscussionSaving
      * @var AnswerRepository
      */
     private $answers;
+    /**
+     * @var ByTagRepository
+     */
+    private $bytags;
 
-    public function __construct(Factory $validation, FieldRepository $fields, AnswerRepository $answers)
+    public function __construct(Factory $validation, FieldRepository $fields, AnswerRepository $answers, ByTagRepository $bytags)
     {
         $this->validation = $validation;
         $this->fields = $fields;
         $this->answers = $answers;
+        $this->bytags = $bytags;
     }
 
     /**

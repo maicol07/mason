@@ -4,6 +4,8 @@ namespace RaafiRivero\Mason\Extend;
 
 use RaafiRivero\Mason\Answer;
 use RaafiRivero\Mason\Api\Serializers\AnswerSerializer;
+use RaafiRivero\Mason\ByTag;
+use RaafiRivero\Mason\Api\Serializers\ByTagSerializer;
 use RaafiRivero\Mason\Handlers\DiscussionSaving;
 use Flarum\Api\Controller\CreateDiscussionController;
 use Flarum\Api\Controller\ListDiscussionsController;
