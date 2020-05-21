@@ -8,100 +8,125 @@ import Switch from 'flarum/components/Switch';
 export default class TagFields extends Component {
 
     init() {
-        // console.log(app.data.settings);
-        // console.log(app.store);
+
+        app.request({
+            method: 'GET',
+            url: app.forum.attribute('apiUrl') + '/raafirivero/mason/bytag',
+        }).then(result => {
+            app.store.pushPayload(result);
+            m.redraw();
+            this.hasData(fields,result);
+        })
 
         this.tag = this.props.tag;
+        this.tagID = this.props.tagid;
         this.dirty = false;
         this.processing = false;
         this.toggleFields = false;
+        this.boarding = true;
+        this.dataRow;
 
+        // this setting will probably go
         this.addedToTag = false;
         
         const fields = app.store.all('raafirivero-mason-field');
         this.fieldsList = [];
 
-        // we want to turn the top function into something like the bottom one
+    }
+
+    hasData(fields,result) {
+        
+        // associate the matching db row with the tag
+        this.myStorage = app.store.all('raafirivero-mason-bytag');
+        var mydb = this.myStorage;
+        //var mydb = result.data;
+        // console.log(mydb);
+        // console.log(result);
+
+        for ( var i = 0 ; i < mydb.length ; i++ ) {
+            if (mydb[i].data.attributes.tag_name == this.tag ) {
+                this.dataRow = mydb[i].data;    
+                this.dataFields = mydb[i].data.attributes.allowed_fields;            
+            }    
+        }
+
+        // terse version
+        // for ( var i = 0 ; i < mydb.length ; i++ ) {
+        //     if (mydb[i].tag_name == this.tag ) {
+        //         this.dataRow = mydb[i];    
+        //         this.dataFields = mydb[i].allowed_fields; 
+        //     }    
+        // }
 
         sortByAttribute(fields)
-            .forEach(field => {
-                // Build array of fields to show.
+            .forEach(field => {                
                 this.fieldsList.push(m('.Form-group', [
             m('label', Switch.component({
-                state: this.addedToTag,
-                //onchange: this.updateSetting.bind(this, this.addedToTag, 'raafirivero.mason.by-tag'),
-                onchange: this.setTagRelationship.bind(this, this.tag, field.data.attributes.name),
+                state: this.isInDb(this.tag,field.data.attributes.name),
+                //onchange: this.isInDb.bind(this, this.tag,field.data.attributes.name),
+                onchange: this.setTagRelationship.bind(this, field.data.attributes.name, field),
                 children: field.data.attributes.name,
                 })),
             ]))
         })
-        // console.log(this.fieldsList);
-    }
 
-    initNewField() {
-        this.tag = app.store.createRecord('raafirivero-mason-bytag', {
-            attributes: {
-                tag_name: '',
-                tag_id: '',
-                allowed_fields: '',
-            },
-        });
-    }
-
-    setTagRelationship(tagName,fieldName,state){
-        // console.log(this);
-        // 'this' is the full fields dropdown under a tag name
-
-        //this.processing = true;
-
-        //const allowedFields = app.store.allowed_fields('raafirivero-mason-bytag');
-        const bytaglist = app.store.all('raafirivero-mason-bytag');
-
-        if ( bytaglist.length == 0 ) {
-            // if it's empty set the first item in the array
-            // console.log("empty list");
-
-            console.log("taglist still 0");
-
+        // create new database entries per tag if they don't exist
+        let preSaved = app.store.all('raafirivero-mason-bytag');
+        if (preSaved[0] == undefined) {
             this.tag = app.store.createRecord('raafirivero-mason-bytag', {
                 attributes: {
-                    tag_name: tagName,
-                    tag_id: '',
-                    allowed_fields: fieldName,
+                    tag_name: this.tag,
+                    tag_id: this.tagID,
+                    allowed_fields: '',
                 },
             });
-
-        } else {
-            // otherwise grab the array of fields listed
-            console.log("taglist plus 1");
+            this.saveField();
         }
 
-        this.saveField()
-        //console.log(bytaglist);
-        return true;    
+        this.boarding = false;
     }
+
+    isInDb(tagName, fieldName) {
+            if(this.dataFields.includes(JSON.stringify(fieldName))) {
+                return true;
+            } 
+    }
+ 
+    setTagRelationship(fieldName, field) {
+
+        if(this.isInDb(fieldName)) {
+            return;
+        } else {
+            let jfieldName = JSON.stringify(fieldName);
+            //console.log (this.tag.data.attributes);
+            console.log(this)
+            //this.dataFields.push(fieldName);
+            //this.saveField();
+
+            // this.tag = app.store.createRecord('raafirivero-mason-bytag', {
+            //     attributes: {
+            //         allowed_fields: jfieldName,
+            //     },
+            // });
+
+
+
+            this.updateAttribute('dataFields', jfieldName);
+        }
+
+        
+
+
+    }
+
 
     saveField() {
         this.processing = true;
 
-        console.log("inside saveField");
-        // console.log(this);
-
-        const createNewRecord = !this.tag.exists;
-
-        console.log('create new record =' + createNewRecord);
-
         this.tag.save(this.tag.data.attributes).then(() => {
-            console.log("start saving");
-            if (createNewRecord) {
-                this.initNewField();
-                this.toggleFields = false;
-            }
 
             this.processing = false;
             this.dirty = false;
-
-
 
             m.redraw();
         }).catch(err => {
@@ -134,18 +159,6 @@ export default class TagFields extends Component {
 
 
 
-    // initNewTagRelationship() {
-    //     this.tag = app.store.createRecord('raafirivero-mason-bytag', {
-    //         attributes: {
-    //             tag_name: '',
-    //             tag_id: '',
-    //             allowed_fields: '',
-    //         },
-    //     });
-    // }
-
-
-
     
     /**
      * Updates setting in database.
@@ -159,6 +172,61 @@ export default class TagFields extends Component {
         });
 
         prop(value)
+    }
+
+
+    updateAttribute(attribute, value) {
+        this.tag.updateAttributes({
+            [attribute]: value,
+        });
+
+        this.dirty = true;
+    }
+
+
+
+    initNewField() {
+        this.tag = app.store.createRecord('raafirivero-mason-bytag', {
+            attributes: {
+                tag_name: '',
+                tag_id: '',
+                allowed_fields: '',
+            },
+        });
+    }
+
+    oldTagRelationship(tagName, tagID, fieldName, state){
+        // console.log(this);
+        // 'this' is the full fields dropdown under a tag name
+
+        this.processing = true;
+
+        //const allowedFields = app.store.allowed_fields('raafirivero-mason-bytag');
+        const bytaglist = app.store.all('raafirivero-mason-bytag');
+
+        if ( bytaglist.length == 0 ) {
+            
+            console.log("taglist still 0");
+
+            // if it's empty set the first item in the array
+            let jfieldName = JSON.stringify(fieldName);
+
+            this.tag = app.store.createRecord('raafirivero-mason-bytag', {
+                attributes: {
+                    tag_name: tagName,
+                    tag_id: tagID,
+                    allowed_fields: jfieldName,
+                },
+            });
+
+        } else {
+            // otherwise grab the array of fields listed
+            console.log("taglist plus 1");
+        }
+
+        //this.saveField()
+        //console.log(bytaglist);
+        return true;    
     }
 
 }

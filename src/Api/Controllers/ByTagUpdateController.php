@@ -16,9 +16,9 @@ class ByTagUpdateController extends AbstractShowController
 
     public $serializer = ByTagSerializer::class;
 
-    // public $include = [
-    //     'all_answers',
-    // ];
+//     public $include = [
+//         'all_fields',
+//     ];
 
     /**
      * @var ByTagRepository
@@ -34,7 +34,7 @@ class ByTagUpdateController extends AbstractShowController
     {
         $this->assertAdmin($request->getAttribute('actor'));
 
-        $id = Arr::get($request->getQueryParams(), 'tag_name');
+        $id = Arr::get($request->getQueryParams(), 'id');
 
         $bytag = $this->bytags->findOrFail($id);
 

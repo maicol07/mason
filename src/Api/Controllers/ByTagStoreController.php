@@ -16,9 +16,9 @@ class ByTagStoreController extends AbstractCreateController
 
     public $serializer = ByTagSerializer::class;
 
-    public $include = [
-        'all_answers',
-    ];
+//     public $include = [
+//         'all_fields',
+//     ];
 
     /**
      * @var ByTagRepository

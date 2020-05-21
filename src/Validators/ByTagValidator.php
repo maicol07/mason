@@ -4,13 +4,13 @@ namespace RaafiRivero\Mason\Validators;
 
 use Flarum\Foundation\AbstractValidator;
 
-class FieldValidator extends AbstractValidator
+class ByTagValidator extends AbstractValidator
 {
     protected function getRules()
     {
         return [
-            'tag_name' => 'required|string',
-            'tag_id' => 'smallinteger',
+            'tag_name' => 'string',
+            'tag_id' => 'integer',
             'allowed_fields' => 'json',
         ];
     }

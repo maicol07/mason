@@ -14,6 +14,13 @@ export default class MasonFieldsPane extends Component {
             app.store.pushPayload(result);
             m.redraw();
         });
+        // app.request({
+        //     method: 'GET',
+        //     url: app.forum.attribute('apiUrl') + '/raafirivero/mason/bytag',
+        // }).then(result => {
+        //     app.store.pushPayload(result);
+        //     m.redraw();
+        // });
     }
 
     config() {

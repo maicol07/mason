@@ -23,7 +23,12 @@ export default class MasonSettings extends Component {
         for (let i = 1; i <= 3; i++) {
             this.columnOptions[i] = app.translator.trans('raafirivero-mason.admin.settings.n-columns', {count: i});
         }
-  
+        
+        console.log(app.store.data);
+        //console.log(app.store.all('raafirivero-mason-fields'));
+        //setTimeout(function(){console.log(app.store.data['raafirivero-mason-bytag'])}, 3000);
+        //setTimeout(function(){console.log(app.store.all('raafirivero-mason-bytag'))}, 3000);
+
 
     }
 
@@ -35,10 +40,11 @@ export default class MasonSettings extends Component {
         
         for ( let i = 0; i < tags.length; i++){   
             var tagName = tags[i].data.attributes.name;
+            var tagID = tags[i].data.id;
 
             tagsList.push(m('.js-tag-data', {
                 'data-id': tagName,
-            }, TagFields.component({tag:tagName})));
+            }, TagFields.component({tag:tagName,tagid:tagID})));
         }
 
         return m('.Mason-Container', [
@@ -71,17 +77,6 @@ export default class MasonSettings extends Component {
                     onchange: this.updateSetting.bind(this, this.columnCount, 'raafirivero.mason.column-count'),
                 }),
             ]),
-            // m('.Form-group', [
-            //     m('label', Switch.component({
-            //         state: this.byTag(),
-            //         onchange: this.updateSetting.bind(this, this.byTag, 'raafirivero.mason.by-tag'),
-            //         children: app.translator.trans('raafirivero-mason.admin.settings.by-tag'),
-            //     })),
-            // ]),
-            // (this.byTag() ? m('.Form-group', [
-            //     m('label', app.translator.trans('raafirivero-mason.admin.settings.by-tag-name')),
-            //     m('.Mason-Box--column',this.tagNames),
-            // ]) : null),
             m('.Form-group', [
                 m('label', Switch.component({
                     state: this.labelsAsPlaceholders(),

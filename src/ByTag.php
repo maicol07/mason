@@ -16,7 +16,7 @@ class ByTag extends AbstractModel
 {
     use SoftDeletes;
 
-    public $timestamps = false;
+    public $timestamps = true;
 
     protected $table = 'raafirivero_mason_bytag';
 
@@ -35,8 +35,8 @@ class ByTag extends AbstractModel
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    // public function answers()
-    // {
-    //     return $this->hasMany(Meta::class);
-    // }
+    public function fields()
+    {
+        return $this->hasMany(Field::class);
+    }
 }

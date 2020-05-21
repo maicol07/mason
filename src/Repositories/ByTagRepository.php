@@ -2,6 +2,7 @@
 
 namespace RaafiRivero\Mason\Repositories;
 
+use RaafiRivero\Mason\Field;
 use RaafiRivero\Mason\ByTag;
 use RaafiRivero\Mason\Validators\ByTagValidator;
 use Flarum\Core\User;
@@ -38,7 +39,9 @@ class ByTagRepository
      */
     protected function query()
     {
-        return $this->bytag->newQuery()->orderBy('sort', 'desc');
+        // this quiery from fields won't work because there's no sort column:
+        // return $this->bytag->newQuery()->orderBy('sort', 'desc');
+        return $this->bytag->newQuery();
     }
 
     /**
@@ -98,7 +101,7 @@ class ByTagRepository
     public function sorting(array $sorting)
     {
         foreach ($sorting as $i => $bytagId) {
-            $this->bytag->where('tag_name', $bytagId)->update(['sort' => $i]);
+            $this->bytag->where('id', $bytagId)->update(['sort' => $i]);
         }
     }
 }

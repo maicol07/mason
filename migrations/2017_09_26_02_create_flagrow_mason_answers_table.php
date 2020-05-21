@@ -12,6 +12,7 @@ return [
             $table->boolean('is_suggested')->default(false);
             $table->integer('sort')->nullable()->index();
             $table->timestamps();
+            $table->softDeletes();
 
             $table->foreign('field_id')->references('id')->on('raafirivero_mason_fields')->onDelete('cascade');
         });

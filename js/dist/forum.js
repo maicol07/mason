@@ -1399,7 +1399,7 @@ function (_mixin) {
    * @inheritDoc
    */
   _proto.apiEndpoint = function apiEndpoint() {
-    return '/raafirivero/mason/bytag' + (this.exists ? '/' + this.data.tag_name : '');
+    return '/raafirivero/mason/bytag' + (this.exists ? '/' + this.data.id : '');
   };
 
   return ByTag;

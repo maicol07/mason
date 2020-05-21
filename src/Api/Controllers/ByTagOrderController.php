@@ -6,6 +6,7 @@ use RaafiRivero\Mason\Api\Serializers\ByTagSerializer;
 use RaafiRivero\Mason\Repositories\ByTagRepository;
 use RaafiRivero\Mason\Validators\OrderValidator;
 use Flarum\Api\Controller\AbstractListController;
+use Flarum\Api\Controller\AbstractShowController;
 use Flarum\User\AssertPermissionTrait;
 use Illuminate\Support\Arr;
 use Psr\Http\Message\ServerRequestInterface;

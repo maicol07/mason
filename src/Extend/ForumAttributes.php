@@ -51,12 +51,17 @@ class ForumAttributes implements ExtenderInterface
         if ($event->isRelationship(ForumSerializer::class, 'raafiriveroMasonFields')) {
             return $event->serializer->hasMany($event->model, FieldSerializer::class, 'raafiriveroMasonFields');
         }
+
+        if ($event->isRelationship(ByTagSerializer::class, 'raafiriveroMasonByTags')) {
+            return $event->serializer->hasMany($event->model, ByTagSerializer::class, 'raafiriveroMasonByTags');
+        }
     }
 
     public function includes(WillGetData $event)
     {
         if ($event->controller->serializer === ForumSerializer::class) {
             $event->addInclude('raafiriveroMasonFields');
+            $event->addInclude('raafiriveroMasonByTags');
             $event->addInclude('raafiriveroMasonFields.suggested_answers');
         }
     }

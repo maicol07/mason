@@ -62,6 +62,14 @@ class Field extends AbstractModel
     ];
 
     /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function bytag()
+    {
+        return $this->belongsToMany(ByTag::class);
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function answers()

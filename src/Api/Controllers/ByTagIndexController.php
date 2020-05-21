@@ -16,9 +16,9 @@ class ByTagIndexController extends AbstractListController
 
     public $serializer = ByTagSerializer::class;
 
-    public $include = [
-        'all_answers',
-    ];
+//    public $include = [
+//        'all_fields',
+//    ];
 
     /**
      * @var ByTagRepository
@@ -33,7 +33,7 @@ class ByTagIndexController extends AbstractListController
     protected function data(ServerRequestInterface $request, Document $document)
     {
         $this->assertAdmin($request->getAttribute('actor'));
-
+        
         return $this->bytags->all();
     }
 }
