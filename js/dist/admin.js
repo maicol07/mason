@@ -2077,11 +2077,11 @@ function (_Component) {
       this.columnOptions[i] = flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('raafirivero-mason.admin.settings.n-columns', {
         count: i
       });
-    }
-
-    console.log(flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a); //console.log(app.store.all('raafirivero-mason-fields'));
+    } //console.log(app);
+    //console.log(app.store.all('raafirivero-mason-fields'));
     //setTimeout(function(){console.log(app.store.data['raafirivero-mason-bytag'])}, 3000);
     //setTimeout(function(){console.log(app.store.all('raafirivero-mason-bytag'))}, 3000);
+
   };
 
   _proto.view = function view() {
