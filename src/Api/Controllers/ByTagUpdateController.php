@@ -39,6 +39,8 @@ class ByTagUpdateController extends AbstractShowController
         $bytag = $this->bytags->findOrFail($id);
 
         $attributes = Arr::get($request->getParsedBody(), 'data.attributes', []);
+        
+error_log('inside controller:' . print_r($attributes, true));
 
         return $this->bytags->update($bytag, $attributes);
     }

@@ -2079,7 +2079,7 @@ function (_Component) {
       });
     }
 
-    console.log(flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.store.data); //console.log(app.store.all('raafirivero-mason-fields'));
+    console.log(flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a); //console.log(app.store.all('raafirivero-mason-fields'));
     //setTimeout(function(){console.log(app.store.data['raafirivero-mason-bytag'])}, 3000);
     //setTimeout(function(){console.log(app.store.all('raafirivero-mason-bytag'))}, 3000);
   };
@@ -2087,7 +2087,7 @@ function (_Component) {
   _proto.view = function view() {
     // list of tags
     var tags = flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.store.all('tags');
-    var tagsList = [];
+    var tagsList = []; //console.log(tags);
 
     for (var i = 0; i < tags.length; i++) {
       var tagName = tags[i].data.attributes.name;
@@ -2171,14 +2171,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var flarum_app__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(flarum_app__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var flarum_helpers_icon__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! flarum/helpers/icon */ "flarum/helpers/icon");
 /* harmony import */ var flarum_helpers_icon__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(flarum_helpers_icon__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _lib_helpers_sortByAttribute__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./../../lib/helpers/sortByAttribute */ "./src/lib/helpers/sortByAttribute.js");
-/* harmony import */ var flarum_utils_saveSettings__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! flarum/utils/saveSettings */ "flarum/utils/saveSettings");
-/* harmony import */ var flarum_utils_saveSettings__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(flarum_utils_saveSettings__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var flarum_Component__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! flarum/Component */ "flarum/Component");
-/* harmony import */ var flarum_Component__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(flarum_Component__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var flarum_components_Switch__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! flarum/components/Switch */ "flarum/components/Switch");
-/* harmony import */ var flarum_components_Switch__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(flarum_components_Switch__WEBPACK_IMPORTED_MODULE_6__);
-
+/* harmony import */ var flarum_Component__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! flarum/Component */ "flarum/Component");
+/* harmony import */ var flarum_Component__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(flarum_Component__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var flarum_components_Switch__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! flarum/components/Switch */ "flarum/components/Switch");
+/* harmony import */ var flarum_components_Switch__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(flarum_components_Switch__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _lib_helpers_sortByAttribute__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./../../lib/helpers/sortByAttribute */ "./src/lib/helpers/sortByAttribute.js");
 
 
 
@@ -2205,9 +2202,8 @@ function (_Component) {
       url: flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.forum.attribute('apiUrl') + '/raafirivero/mason/bytag'
     }).then(function (result) {
       flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.store.pushPayload(result);
-      m.redraw();
 
-      _this.hasData(fields, result);
+      _this.initRows(result);
     });
     this.tag = this.props.tag;
     this.tagID = this.props.tagid;
@@ -2215,174 +2211,131 @@ function (_Component) {
     this.processing = false;
     this.toggleFields = false;
     this.boarding = true;
-    this.dataRow; // this setting will probably go
-
-    this.addedToTag = false;
-    var fields = flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.store.all('raafirivero-mason-field');
+    this.dataRow;
     this.fieldsList = [];
   };
 
-  _proto.hasData = function hasData(fields, result) {
+  _proto.initRows = function initRows(result) {
     var _this2 = this;
 
-    // associate the matching db row with the tag
-    this.myStorage = flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.store.all('raafirivero-mason-bytag');
-    var mydb = this.myStorage; //var mydb = result.data;
-    // console.log(mydb);
-    // console.log(result);
+    // result is from the API call, switch to that if nec;
+    var tempStorage = flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.store.all('raafirivero-mason-bytag');
+    var fields = flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.store.all('raafirivero-mason-field'); // convert to strings for API call
 
-    for (var i = 0; i < mydb.length; i++) {
-      if (mydb[i].data.attributes.tag_name == this.tag) {
-        this.dataRow = mydb[i].data;
-        this.dataFields = mydb[i].data.attributes.allowed_fields;
-      }
-    } // terse version
-    // for ( var i = 0 ; i < mydb.length ; i++ ) {
-    //     if (mydb[i].tag_name == this.tag ) {
-    //         this.dataRow = mydb[i];    
-    //         this.dataFields = mydb[i].allowed_fields; 
-    //     }    
-    // }
+    var tagname = this.tag;
+    var thetagID = this.tagID; // match each Tag with the rows in the database that contain its fields
 
+    this.matchingTag = tempStorage.filter(function (match) {
+      return match.data.attributes.tag_name == _this2.tag;
+    }); // sort alphabetically
 
-    Object(_lib_helpers_sortByAttribute__WEBPACK_IMPORTED_MODULE_3__["default"])(fields).forEach(function (field) {
-      _this2.fieldsList.push(m('.Form-group', [m('label', flarum_components_Switch__WEBPACK_IMPORTED_MODULE_6___default.a.component({
-        state: _this2.isInDb(_this2.tag, field.data.attributes.name),
-        //onchange: this.isInDb.bind(this, this.tag,field.data.attributes.name),
-        onchange: _this2.setTagRelationship.bind(_this2, field.data.attributes.name, field),
-        children: field.data.attributes.name
-      }))]));
-    }); // create new database entries per tag if they don't exist
+    this.matchingTag.sort(function (x, y) {
+      var a = x.data.attributes.allowed_field.toUpperCase(),
+          b = y.data.attributes.allowed_field.toUpperCase();
+      return a == b ? 0 : a > b ? 1 : -1;
+    }); // if a Tag has just been created, make its rows in the database
 
-    var preSaved = flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.store.all('raafirivero-mason-bytag');
+    if (this.matchingTag == false) {
+      var i = 0;
+      Object(_lib_helpers_sortByAttribute__WEBPACK_IMPORTED_MODULE_5__["default"])(fields).forEach(function (field) {
+        var rec = flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.store.createRecord('raafirivero-mason-bytag', {
+          attributes: {
+            tag_name: tagname,
+            tag_id: thetagID,
+            allowed_field: JSON.stringify(field.data.attributes.name),
+            "switch": false
+          }
+        });
+        i++;
 
-    if (preSaved[0] == undefined) {
-      this.tag = flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.store.createRecord('raafirivero-mason-bytag', {
-        attributes: {
-          tag_name: this.tag,
-          tag_id: this.tagID,
-          allowed_fields: ''
-        }
+        _this2.matchingTag.push(rec);
+
+        _this2.makeRow(rec.data.attributes, i);
       });
-      this.saveField();
+    } else {
+      this.buildSwitches();
     }
+  };
 
+  _proto.buildSwitches = function buildSwitches() {
+    var _this3 = this;
+
+    // array of on/off switches under each Tag
+    this.matchingTag.forEach(function (field) {
+      var mySwitch = field.data.attributes["switch"];
+      var rowID = field.data.id;
+
+      _this3.fieldsList.push(m('.Form-group', [m('label', flarum_components_Switch__WEBPACK_IMPORTED_MODULE_4___default.a.component({
+        state: mySwitch,
+        onchange: _this3.updateRow.bind(_this3, rowID),
+        children: JSON.parse(field.data.attributes.allowed_field)
+      }))]));
+    });
+    m.redraw();
     this.boarding = false;
   };
 
-  _proto.isInDb = function isInDb(tagName, fieldName) {
-    if (this.dataFields.includes(JSON.stringify(fieldName))) {
-      return true;
-    }
-  };
+  _proto.makeRow = function makeRow(attributes, count) {
+    var _this4 = this;
 
-  _proto.setTagRelationship = function setTagRelationship(fieldName, field) {
-    if (this.isInDb(fieldName)) {
+    flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.request({
+      method: 'POST',
+      url: flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.forum.attribute('apiUrl') + '/raafirivero/mason/bytag',
+      data: {
+        data: {
+          attributes: attributes
+        }
+      }
+    }).then(function (result) {
+      flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.store.pushPayload(result);
+
+      _this4.reInit(count);
+
       return;
-    } else {
-      var jfieldName = JSON.stringify(fieldName); //console.log (this.tag.data.attributes);
-
-      console.log(this); //this.dataFields.push(fieldName);
-      //this.saveField();
-      // this.tag = app.store.createRecord('raafirivero-mason-bytag', {
-      //     attributes: {
-      //         allowed_fields: jfieldName,
-      //     },
-      // });
-
-      this.updateAttribute('dataFields', jfieldName);
-    }
-  };
-
-  _proto.saveField = function saveField() {
-    var _this3 = this;
-
-    this.processing = true;
-    this.tag.save(this.tag.data.attributes).then(function () {
-      _this3.processing = false;
-      _this3.dirty = false;
-      m.redraw();
-    })["catch"](function (err) {
-      _this3.processing = false;
-      throw err;
     });
   };
 
+  _proto.updateRow = function updateRow(rownumber, switchstate, switchobj) {
+    // switching the HTML element *before* the API call for apparent speed
+    switchobj.props.state = switchstate;
+    flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.request({
+      method: 'PATCH',
+      url: flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.forum.attribute('apiUrl') + '/raafirivero/mason/bytag/' + rownumber,
+      data: {
+        data: {
+          attributes: {
+            "switch": switchstate
+          }
+        }
+      }
+    }).then(function (result) {
+      flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.store.pushPayload(result); // better to update HTML element here, but slower for the user
+    });
+  };
+
+  _proto.reInit = function reInit(num) {
+    // re-initialize once all the rows are made per tag;
+    if (flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.store.all('raafirivero-mason-field').length == num) {
+      this.init();
+    }
+  };
+
   _proto.view = function view() {
-    var _this4 = this;
+    var _this5 = this;
 
     return m('.Mason-Tags-Dropdown', [m('.Button.Button--block.Mason-Box-Header', {
       onclick: function onclick() {
-        _this4.toggleFields = !_this4.toggleFields;
+        _this5.toggleFields = !_this5.toggleFields;
       }
     }, [m('.Mason-Box-Header-Title', this.tag), m('div', flarum_helpers_icon__WEBPACK_IMPORTED_MODULE_2___default()('fas fa-chevron-' + (this.toggleFields ? 'up' : 'down')))]), this.toggleFields ? this.seeFields() : null]);
   };
 
   _proto.seeFields = function seeFields() {
     return m('div', [this.fieldsList]);
-  }
-  /**
-   * Updates setting in database.
-   * @param prop
-   * @param setting
-   * @param value
-   */
-  ;
-
-  _proto.updateSetting = function updateSetting(prop, setting, value) {
-    var _saveSettings;
-
-    flarum_utils_saveSettings__WEBPACK_IMPORTED_MODULE_4___default()((_saveSettings = {}, _saveSettings[setting] = value, _saveSettings));
-    prop(value);
-  };
-
-  _proto.updateAttribute = function updateAttribute(attribute, value) {
-    var _this$tag$updateAttri;
-
-    this.tag.updateAttributes((_this$tag$updateAttri = {}, _this$tag$updateAttri[attribute] = value, _this$tag$updateAttri));
-    this.dirty = true;
-  };
-
-  _proto.initNewField = function initNewField() {
-    this.tag = flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.store.createRecord('raafirivero-mason-bytag', {
-      attributes: {
-        tag_name: '',
-        tag_id: '',
-        allowed_fields: ''
-      }
-    });
-  };
-
-  _proto.oldTagRelationship = function oldTagRelationship(tagName, tagID, fieldName, state) {
-    // console.log(this);
-    // 'this' is the full fields dropdown under a tag name
-    this.processing = true; //const allowedFields = app.store.allowed_fields('raafirivero-mason-bytag');
-
-    var bytaglist = flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.store.all('raafirivero-mason-bytag');
-
-    if (bytaglist.length == 0) {
-      console.log("taglist still 0"); // if it's empty set the first item in the array
-
-      var jfieldName = JSON.stringify(fieldName);
-      this.tag = flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.store.createRecord('raafirivero-mason-bytag', {
-        attributes: {
-          tag_name: tagName,
-          tag_id: tagID,
-          allowed_fields: jfieldName
-        }
-      });
-    } else {
-      // otherwise grab the array of fields listed
-      console.log("taglist plus 1");
-    } //this.saveField()
-    //console.log(bytaglist);
-
-
-    return true;
   };
 
   return TagFields;
-}(flarum_Component__WEBPACK_IMPORTED_MODULE_5___default.a);
+}(flarum_Component__WEBPACK_IMPORTED_MODULE_3___default.a);
 
 
 
@@ -2645,7 +2598,8 @@ function (_mixin) {
 }(flarum_utils_mixin__WEBPACK_IMPORTED_MODULE_3___default()(flarum_Model__WEBPACK_IMPORTED_MODULE_2___default.a, {
   tag_name: flarum_Model__WEBPACK_IMPORTED_MODULE_2___default.a.attribute('tag_name'),
   tag_id: flarum_Model__WEBPACK_IMPORTED_MODULE_2___default.a.attribute('tag_id'),
-  allowed_fields: flarum_Model__WEBPACK_IMPORTED_MODULE_2___default.a.attribute('allowed_fields')
+  allowed_field: flarum_Model__WEBPACK_IMPORTED_MODULE_2___default.a.attribute('allowed_field'),
+  "switch": flarum_Model__WEBPACK_IMPORTED_MODULE_2___default.a.attribute('switch')
 }));
 
 

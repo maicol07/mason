@@ -83,7 +83,7 @@ class ByTagRepository
     public function update(ByTag $bytag, array $attributes)
     {
         $this->validator->assertValid($attributes);
-
+        
         $bytag->fill($attributes);
         $bytag->save();
 

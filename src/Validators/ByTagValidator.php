@@ -11,7 +11,8 @@ class ByTagValidator extends AbstractValidator
         return [
             'tag_name' => 'string',
             'tag_id' => 'integer',
-            'allowed_fields' => 'json',
+            'allowed_field' => 'json',
+            'switch' => 'boolean',
         ];
     }
 }

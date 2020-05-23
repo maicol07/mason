@@ -1406,7 +1406,8 @@ function (_mixin) {
 }(flarum_utils_mixin__WEBPACK_IMPORTED_MODULE_3___default()(flarum_Model__WEBPACK_IMPORTED_MODULE_2___default.a, {
   tag_name: flarum_Model__WEBPACK_IMPORTED_MODULE_2___default.a.attribute('tag_name'),
   tag_id: flarum_Model__WEBPACK_IMPORTED_MODULE_2___default.a.attribute('tag_id'),
-  allowed_fields: flarum_Model__WEBPACK_IMPORTED_MODULE_2___default.a.attribute('allowed_fields')
+  allowed_field: flarum_Model__WEBPACK_IMPORTED_MODULE_2___default.a.attribute('allowed_field'),
+  "switch": flarum_Model__WEBPACK_IMPORTED_MODULE_2___default.a.attribute('switch')
 }));
 
 

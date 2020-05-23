@@ -1,9 +1,8 @@
 import app from 'flarum/app';
 import icon from 'flarum/helpers/icon';
-import sortByAttribute from './../../lib/helpers/sortByAttribute';
-import saveSettings from "flarum/utils/saveSettings";
 import Component from 'flarum/Component';
 import Switch from 'flarum/components/Switch';
+import sortByAttribute from './../../lib/helpers/sortByAttribute';
 
 export default class TagFields extends Component {
 
@@ -14,8 +13,7 @@ export default class TagFields extends Component {
             url: app.forum.attribute('apiUrl') + '/raafirivero/mason/bytag',
         }).then(result => {
             app.store.pushPayload(result);
-            m.redraw();
-            this.hasData(fields,result);
+            this.initRows(result)
         })
 
         this.tag = this.props.tag;
@@ -25,115 +23,119 @@ export default class TagFields extends Component {
         this.toggleFields = false;
         this.boarding = true;
         this.dataRow;
-
-        // this setting will probably go
-        this.addedToTag = false;
-        
-        const fields = app.store.all('raafirivero-mason-field');
         this.fieldsList = [];
 
     }
 
-    hasData(fields,result) {
+    initRows(result) {
         
-        // associate the matching db row with the tag
-        this.myStorage = app.store.all('raafirivero-mason-bytag');
-        var mydb = this.myStorage;
-        //var mydb = result.data;
-        // console.log(mydb);
-        // console.log(result);
+        // result is from the API call, switch to that if nec;
+        let tempStorage = app.store.all('raafirivero-mason-bytag');
+        const fields = app.store.all('raafirivero-mason-field');
 
-        for ( var i = 0 ; i < mydb.length ; i++ ) {
-            if (mydb[i].data.attributes.tag_name == this.tag ) {
-                this.dataRow = mydb[i].data;    
-                this.dataFields = mydb[i].data.attributes.allowed_fields;            
-            }    
-        }
+        // convert to strings for API call
+        let tagname = this.tag;
+        let thetagID = this.tagID;
 
-        // terse version
-        // for ( var i = 0 ; i < mydb.length ; i++ ) {
-        //     if (mydb[i].tag_name == this.tag ) {
-        //         this.dataRow = mydb[i];    
-        //         this.dataFields = mydb[i].allowed_fields; 
-        //     }    
-        // }
+        // match each Tag with the rows in the database that contain its fields
+        this.matchingTag = tempStorage.filter(match => match.data.attributes.tag_name == this.tag);
+        // sort alphabetically
+        this.matchingTag.sort(function (x, y) {
+            let a = x.data.attributes.allowed_field.toUpperCase(),
+                b = y.data.attributes.allowed_field.toUpperCase();
+            return a == b ? 0 : a > b ? 1 : -1;
+        });
+        
+        // if a Tag has just been created, make its rows in the database
+        if (this.matchingTag == false) {
 
-        sortByAttribute(fields)
-            .forEach(field => {                
-                this.fieldsList.push(m('.Form-group', [
-            m('label', Switch.component({
-                state: this.isInDb(this.tag,field.data.attributes.name),
-                //onchange: this.isInDb.bind(this, this.tag,field.data.attributes.name),
-                onchange: this.setTagRelationship.bind(this, field.data.attributes.name, field),
-                children: field.data.attributes.name,
-                })),
-            ]))
-        })
-
-        // create new database entries per tag if they don't exist
-        let preSaved = app.store.all('raafirivero-mason-bytag');
-        if (preSaved[0] == undefined) {
-            this.tag = app.store.createRecord('raafirivero-mason-bytag', {
-                attributes: {
-                    tag_name: this.tag,
-                    tag_id: this.tagID,
-                    allowed_fields: '',
-                },
+            var i = 0;
+            sortByAttribute(fields)
+            .forEach(field => {  
+                let rec = app.store.createRecord('raafirivero-mason-bytag', {
+                    attributes: {
+                        tag_name: tagname,
+                        tag_id: thetagID,
+                        allowed_field: JSON.stringify(field.data.attributes.name),
+                        switch: false,
+                    },
+                })
+                i++; 
+                this.matchingTag.push(rec);
+                this.makeRow(rec.data.attributes, i);
             });
-            this.saveField();
-        }
 
-        this.boarding = false;
-    }
+        } else {
+            this.buildSwitches()
+        }    
 
-    isInDb(tagName, fieldName) {
-            if(this.dataFields.includes(JSON.stringify(fieldName))) {
-                return true;
-            } 
     }
  
-    setTagRelationship(fieldName, field) {
-
-        if(this.isInDb(fieldName)) {
-            return;
-        } else {
-            let jfieldName = JSON.stringify(fieldName);
-            //console.log (this.tag.data.attributes);
-            console.log(this)
-            //this.dataFields.push(fieldName);
-            //this.saveField();
-
-            // this.tag = app.store.createRecord('raafirivero-mason-bytag', {
-            //     attributes: {
-            //         allowed_fields: jfieldName,
-            //     },
-            // });
-
-
-
-            this.updateAttribute('dataFields', jfieldName);
-        }
-
+    buildSwitches() {
         
+        // array of on/off switches under each Tag
+        this.matchingTag.forEach(field => {      
 
+            let mySwitch = field.data.attributes.switch;
+            let rowID = field.data.id;     
 
+             this.fieldsList.push(m('.Form-group', [
+         m('label', Switch.component({
+             state: mySwitch,
+             onchange: this.updateRow.bind(this, rowID),
+             children: JSON.parse(field.data.attributes.allowed_field),
+             })),
+         ]))
+
+        })
+
+     m.redraw();
+     this.boarding = false;
     }
 
+    makeRow(attributes, count) {
 
-    saveField() {
-        this.processing = true;
-
-        this.tag.save(this.tag.data.attributes).then(() => {
-
-            this.processing = false;
-            this.dirty = false;
-
-            m.redraw();
-        }).catch(err => {
-            this.processing = false;
-
-            throw err;
+        app.request({
+            method: 'POST',
+            url: app.forum.attribute('apiUrl') + '/raafirivero/mason/bytag',
+            data: {
+                data: {
+                    attributes: attributes
+                },
+            },
+        }).then(result => {
+            app.store.pushPayload(result);
+            this.reInit(count);
+            return;
         });
+    }
+
+    updateRow(rownumber, switchstate, switchobj) {
+
+        // switching the HTML element *before* the API call for apparent speed
+        switchobj.props.state = switchstate;
+
+        app.request({
+            method: 'PATCH',
+            url: app.forum.attribute('apiUrl') + '/raafirivero/mason/bytag/' + rownumber,
+            data: {
+                data: {
+                    attributes: {
+                        switch: switchstate,
+                    },
+                },
+            },
+        }).then(result => {
+            app.store.pushPayload(result);
+            // better to update HTML element here, but slower for the user
+        });
+    }
+
+    reInit(num) {
+        // re-initialize once all the rows are made per tag;
+        if( app.store.all('raafirivero-mason-field').length == num ) {
+            this.init();
+        }
     }
 
     view() {
@@ -155,78 +157,6 @@ export default class TagFields extends Component {
         return m('div', [
                 this.fieldsList
             ]);
-    }
-
-
-
-    
-    /**
-     * Updates setting in database.
-     * @param prop
-     * @param setting
-     * @param value
-     */
-    updateSetting(prop, setting, value) {
-        saveSettings({
-            [setting]: value
-        });
-
-        prop(value)
-    }
-
-
-    updateAttribute(attribute, value) {
-        this.tag.updateAttributes({
-            [attribute]: value,
-        });
-
-        this.dirty = true;
-    }
-
-
-
-    initNewField() {
-        this.tag = app.store.createRecord('raafirivero-mason-bytag', {
-            attributes: {
-                tag_name: '',
-                tag_id: '',
-                allowed_fields: '',
-            },
-        });
-    }
-
-    oldTagRelationship(tagName, tagID, fieldName, state){
-        // console.log(this);
-        // 'this' is the full fields dropdown under a tag name
-
-        this.processing = true;
-
-        //const allowedFields = app.store.allowed_fields('raafirivero-mason-bytag');
-        const bytaglist = app.store.all('raafirivero-mason-bytag');
-
-        if ( bytaglist.length == 0 ) {
-            
-            console.log("taglist still 0");
-
-            // if it's empty set the first item in the array
-            let jfieldName = JSON.stringify(fieldName);
-
-            this.tag = app.store.createRecord('raafirivero-mason-bytag', {
-                attributes: {
-                    tag_name: tagName,
-                    tag_id: tagID,
-                    allowed_fields: jfieldName,
-                },
-            });
-
-        } else {
-            // otherwise grab the array of fields listed
-            console.log("taglist plus 1");
-        }
-
-        //this.saveField()
-        //console.log(bytaglist);
-        return true;    
     }
 
 }

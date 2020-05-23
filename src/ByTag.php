@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 /**
  * @property string $tagname
  * @property int $tagid
- * @property string $allowed_fields
+ * @property string $allowed_field
  * @property \Illuminate\Database\Eloquent\Collection|ByTag[] $bytags
  */
 class ByTag extends AbstractModel
@@ -23,13 +23,16 @@ class ByTag extends AbstractModel
     protected $visible = [
         'tag_name',
         'tag_id',
-        'allowed_fields',
+        'allowed_field',
+        'switch',
     ];
+
 
     protected $fillable = [
         'tag_name',
         'tag_id',
-        'allowed_fields',
+        'allowed_field',
+        'switch',
     ];
 
     /**

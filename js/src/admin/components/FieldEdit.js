@@ -188,6 +188,7 @@ export default class FieldEdit extends Component {
     }
 
     updateAttribute(attribute, value) {
+        
         this.field.pushAttributes({
             [attribute]: value,
         });

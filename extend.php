@@ -42,7 +42,7 @@ return [
         ->get('/raafirivero/mason/bytag', 'raafirivero.mason.api.bytag.index', Api\Controllers\ByTagIndexController::class)
         ->post('/raafirivero/mason/bytag', 'raafirivero.mason.api.bytag.store', Api\Controllers\ByTagStoreController::class)
         ->patch('/raafirivero/mason/bytag/{id:[0-9]+}', 'raafirivero.mason.api.bytag.update', Api\Controllers\ByTagUpdateController::class)
-        ->delete('/raafirivero/mason/bytag/{id:[0-9]+/}', 'raafirivero.mason.api.bytag.delete', Api\Controllers\ByTagDeleteController::class),
+        ->delete('/raafirivero/mason/bytag/{id:[0-9]+}', 'raafirivero.mason.api.bytag.delete', Api\Controllers\ByTagDeleteController::class),
     (new Extend\Locales(__DIR__.'/resources/locale')),
     new ForumAttributes,
     new DiscussionAttributes,

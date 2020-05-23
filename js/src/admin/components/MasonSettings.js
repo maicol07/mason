@@ -24,7 +24,7 @@ export default class MasonSettings extends Component {
             this.columnOptions[i] = app.translator.trans('raafirivero-mason.admin.settings.n-columns', {count: i});
         }
         
-        console.log(app.store.data);
+        console.log(app);
         //console.log(app.store.all('raafirivero-mason-fields'));
         //setTimeout(function(){console.log(app.store.data['raafirivero-mason-bytag'])}, 3000);
         //setTimeout(function(){console.log(app.store.all('raafirivero-mason-bytag'))}, 3000);
@@ -37,6 +37,7 @@ export default class MasonSettings extends Component {
         // list of tags
         const tags = app.store.all('tags');
         let tagsList = [];    
+        //console.log(tags);
         
         for ( let i = 0; i < tags.length; i++){   
             var tagName = tags[i].data.attributes.name;
