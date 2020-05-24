@@ -33,15 +33,20 @@ class ForumAttributes implements ExtenderInterface
          * @var $fields FieldRepository
          */
         $fields = app(FieldRepository::class);
+        
+        $bytags = app(ByTagRepository::class);
+        // logging the $bytags variable works - plus a huge outlay of the whole app environment
 
         if ($event->isController(ShowForumController::class)) {
             // Fields need to be pre-loaded for the discussion composer, and also to be able to show empty fields on discussions
             // We first try the permissions the users are most likely to have
             if ($event->actor->can('raafirivero.mason.see-other-fields') || $event->actor->can('raafirivero.mason.fill-fields') || $event->actor->can('raafirivero.mason.see-own-fields')) {
                 $event->data['raafiriveroMasonFields'] = $fields->all();
+                $event->data['raafiriveroMasonByTags'] = $bytags->all();
             } else {
                 // Fill empty set. Without this, installs with visible notices will get "Undefined index: raafiriveroMasonFields"
                 $event->data['raafiriveroMasonFields'] = [];
+                $event->data['raafiriveroMasonByTags'] = [];
             }
         }
     }
@@ -49,10 +54,12 @@ class ForumAttributes implements ExtenderInterface
     public function serializer(GetApiRelationship $event)
     {
         if ($event->isRelationship(ForumSerializer::class, 'raafiriveroMasonFields')) {
-            return $event->serializer->hasMany($event->model, FieldSerializer::class, 'raafiriveroMasonFields');
+             return $event->serializer->hasMany($event->model, FieldSerializer::class, 'raafiriveroMasonFields');
         }
 
-        if ($event->isRelationship(ByTagSerializer::class, 'raafiriveroMasonByTags')) {
+        if ($event->isRelationship(ForumSerializer::class, 'raafiriveroMasonByTags')) {
+            // expose the ByTags data in the app object for the main forum
+            // note this is the ForumSerializer that both fields and bytags are appending themselves to
             return $event->serializer->hasMany($event->model, ByTagSerializer::class, 'raafiriveroMasonByTags');
         }
     }
@@ -60,9 +67,11 @@ class ForumAttributes implements ExtenderInterface
     public function includes(WillGetData $event)
     {
         if ($event->controller->serializer === ForumSerializer::class) {
+            
             $event->addInclude('raafiriveroMasonFields');
-            $event->addInclude('raafiriveroMasonByTags');
             $event->addInclude('raafiriveroMasonFields.suggested_answers');
+            $event->addInclude('raafiriveroMasonByTags');
+            
         }
     }
 
@@ -87,6 +96,7 @@ class ForumAttributes implements ExtenderInterface
                 $event->attributes['raafirivero.mason.labels-as-placeholders'] = (bool) $settings->get('raafirivero.mason.labels-as-placeholders', false);
                 $event->attributes['raafirivero.mason.tags-as-fields'] = (bool) $settings->get('raafirivero.mason.tags-as-fields', false);
                 $event->attributes['raafirivero.mason.tags-field-name'] = $settings->get('raafirivero.mason.tags-field-name', '');
+                $event->attributes['raafirivero.mason.by-tag'] = (bool) $settings->get('raafirivero.mason.by-tag', false);
             }
 
             if ($canSeeSome) {

@@ -138,9 +138,13 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+ // import ByTag from '../lib/models/ByTag';
 
 /* harmony default export */ __webpack_exports__["default"] = (function () {
   flarum_components_DiscussionComposer__WEBPACK_IMPORTED_MODULE_2___default.a.prototype.raafiriveroMasonAnswers = [];
+  var byTag = flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.data.resources[0].attributes['raafirivero.mason.by-tag']; // console.log(app.data.resources);
+
+  console.log(flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.store);
   Object(flarum_extend__WEBPACK_IMPORTED_MODULE_0__["extend"])(flarum_components_DiscussionComposer__WEBPACK_IMPORTED_MODULE_2___default.a.prototype, 'headerItems', function (items) {
     var _this = this;
 
@@ -148,20 +152,37 @@ __webpack_require__.r(__webpack_exports__);
       return;
     }
 
-    items.add('raafirivero-mason-fields', _components_FieldsEditor__WEBPACK_IMPORTED_MODULE_3__["default"].component({
-      answers: this.raafiriveroMasonAnswers,
-      onchange: function onchange(answers) {
-        _this.raafiriveroMasonAnswers = answers;
-      },
-      ontagchange: function ontagchange(tags) {
-        _this.tags = tags;
-      }
-    }));
+    if (!byTag) {
+      // turn off the fields completely if the main byTag setting is off
+      items.add('raafirivero-mason-fields', _components_FieldsEditor__WEBPACK_IMPORTED_MODULE_3__["default"].component({
+        answers: this.raafiriveroMasonAnswers,
+        onchange: function onchange(answers) {
+          _this.raafiriveroMasonAnswers = answers;
+        },
+        ontagchange: function ontagchange(tags) {
+          _this.tags = tags;
+        }
+      }));
+    } else {
+      // logic here
+      this.byTag = byTag; // items.add('raafirivero-mason-fields', FieldsEditor.component({
+      //     answers: this.raafiriveroMasonAnswers,
+      //     onchange: answers => {
+      //         this.raafiriveroMasonAnswers = answers;
+      //     },
+      //     ontagchange: tags => {
+      //         this.tags = tags;
+      //     },
+      // }));
+    }
   });
   Object(flarum_extend__WEBPACK_IMPORTED_MODULE_0__["extend"])(flarum_components_DiscussionComposer__WEBPACK_IMPORTED_MODULE_2___default.a.prototype, 'data', function (data) {
     if (!flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.forum.canFillRaafiRiveroMasonFields()) {
       return;
-    }
+    } //
+
+
+    error_log(data); //
 
     data.relationships = data.relationships || {};
     data.relationships.raafiriveroMasonAnswers = this.raafiriveroMasonAnswers;

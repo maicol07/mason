@@ -38,8 +38,8 @@ class ByTag extends AbstractModel
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function fields()
-    {
-        return $this->hasMany(Field::class);
-    }
+//    public function fields()
+//    {
+//        return $this->hasMany(Field::class);
+//    }
 }

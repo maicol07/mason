@@ -43,6 +43,7 @@ class DiscussionAttributes implements ExtenderInterface
                     $query->whereNull('deleted_at');
                 });
         }
+      
     }
 
     public function serializer(GetApiRelationship $event)
@@ -63,6 +64,7 @@ class DiscussionAttributes implements ExtenderInterface
                 'raafiriveroMasonAnswers.field',
             ]);
         }
+        
     }
 
     public function attributes(Serializing $event)
