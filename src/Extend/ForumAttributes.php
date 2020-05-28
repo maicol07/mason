@@ -82,6 +82,8 @@ class ForumAttributes implements ExtenderInterface
              * @var $settings SettingsRepositoryInterface
              */
             $settings = app(SettingsRepositoryInterface::class);
+            
+            // need to adjust this conditional logic: users who aren't logged in should still see the fields...
 
             $canFill = $event->actor->can('raafirivero.mason.fill-fields');
             $canSeeSome = $event->actor->can('raafirivero.mason.see-other-fields') || $event->actor->can('raafirivero.mason.see-own-fields');

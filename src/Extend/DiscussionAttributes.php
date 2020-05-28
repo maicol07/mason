@@ -77,7 +77,8 @@ class DiscussionAttributes implements ExtenderInterface
 
             if (!$canSee) {
                 // Will cause a skip of the relationship retrieval
-                $event->model->setRelation('raafiriveroMasonAnswers', null);
+                // changing this line: we need the plugin working when users are logged out, too
+                //$event->model->setRelation('raafiriveroMasonAnswers', null);
             }
         }
     }

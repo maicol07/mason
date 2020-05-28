@@ -16,9 +16,11 @@ class ByTagIndexController extends AbstractListController
 
     public $serializer = ByTagSerializer::class;
 
-//    public $include = [
-//        'all_fields',
-//    ];
+    public $include = [
+        'all_fields',
+    ];
+    
+    public $optionalInclude = ['fields'];
 
     /**
      * @var ByTagRepository

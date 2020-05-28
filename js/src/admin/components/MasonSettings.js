@@ -1,6 +1,6 @@
 import app from 'flarum/app';
 //import icon from 'flarum/helpers/icon';
-//import sortByAttribute from './../../lib/helpers/sortByAttribute';
+// import sortByAttribute from './../../lib/helpers/sortByAttribute';
 import TagFields from './TagFields';
 import saveSettings from "flarum/utils/saveSettings";
 import Component from 'flarum/Component';
@@ -37,7 +37,6 @@ export default class MasonSettings extends Component {
         // list of tags
         const tags = app.store.all('tags');
         let tagsList = [];    
-        //console.log(tags);
         
         for ( let i = 0; i < tags.length; i++){   
             var tagName = tags[i].data.attributes.name;

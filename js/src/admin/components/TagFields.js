@@ -45,6 +45,38 @@ export default class TagFields extends Component {
                 b = y.data.attributes.allowed_field.toUpperCase();
             return a == b ? 0 : a > b ? 1 : -1;
         });
+
+        // if a field has been created, add a row for it in the db connected to each tag
+        if( this.matchingTag.length < fields.length ) {
+            let allowedList = [];
+            this.matchingTag.forEach( function(e) {
+                allowedList.push(JSON.parse(e.data.attributes.allowed_field))
+            })
+
+           sortByAttribute(fields)
+           .forEach(field => { 
+                    if ( allowedList.some(function(f){
+                        return f == field.data.attributes.name 
+                    })) {
+                        // the name already exists
+                    } else {
+
+                        // create a new entry in the db for this field
+                        let frec = app.store.createRecord('raafirivero-mason-bytag', {
+                            attributes: {
+                                tag_name: tagname,
+                                tag_id: thetagID,
+                                allowed_field: JSON.stringify(field.data.attributes.name),
+                                switch: false,
+                            },
+                        })
+                        this.matchingTag.push(frec);
+                        this.makeRow(frec.data.attributes, fields.length);
+                    }
+           })
+                   
+           
+        }
         
         // if a Tag has just been created, make its rows in the database
         if (this.matchingTag == false) {
@@ -73,6 +105,7 @@ export default class TagFields extends Component {
  
     buildSwitches() {
         
+        //console.log(this.matchingTag);
         // array of on/off switches under each Tag
         this.matchingTag.forEach(field => {      
 

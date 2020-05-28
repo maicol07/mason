@@ -2043,7 +2043,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var flarum_components_Switch__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(flarum_components_Switch__WEBPACK_IMPORTED_MODULE_6__);
 
  //import icon from 'flarum/helpers/icon';
-//import sortByAttribute from './../../lib/helpers/sortByAttribute';
+// import sortByAttribute from './../../lib/helpers/sortByAttribute';
 
 
 
@@ -2087,7 +2087,7 @@ function (_Component) {
   _proto.view = function view() {
     // list of tags
     var tags = flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.store.all('tags');
-    var tagsList = []; //console.log(tags);
+    var tagsList = [];
 
     for (var i = 0; i < tags.length; i++) {
       var tagName = tags[i].data.attributes.name;
@@ -2233,7 +2233,35 @@ function (_Component) {
       var a = x.data.attributes.allowed_field.toUpperCase(),
           b = y.data.attributes.allowed_field.toUpperCase();
       return a == b ? 0 : a > b ? 1 : -1;
-    }); // if a Tag has just been created, make its rows in the database
+    }); // if a field has been created, add a row for it in the db connected to each tag
+
+    if (this.matchingTag.length < fields.length) {
+      var allowedList = [];
+      this.matchingTag.forEach(function (e) {
+        allowedList.push(JSON.parse(e.data.attributes.allowed_field));
+      });
+      Object(_lib_helpers_sortByAttribute__WEBPACK_IMPORTED_MODULE_5__["default"])(fields).forEach(function (field) {
+        if (allowedList.some(function (f) {
+          return f == field.data.attributes.name;
+        })) {// the name already exists
+        } else {
+          // create a new entry in the db for this field
+          var frec = flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.store.createRecord('raafirivero-mason-bytag', {
+            attributes: {
+              tag_name: tagname,
+              tag_id: thetagID,
+              allowed_field: JSON.stringify(field.data.attributes.name),
+              "switch": false
+            }
+          });
+
+          _this2.matchingTag.push(frec);
+
+          _this2.makeRow(frec.data.attributes, fields.length);
+        }
+      });
+    } // if a Tag has just been created, make its rows in the database
+
 
     if (this.matchingTag == false) {
       var i = 0;
@@ -2260,6 +2288,7 @@ function (_Component) {
   _proto.buildSwitches = function buildSwitches() {
     var _this3 = this;
 
+    //console.log(this.matchingTag);
     // array of on/off switches under each Tag
     this.matchingTag.forEach(function (field) {
       var mySwitch = field.data.attributes["switch"];
