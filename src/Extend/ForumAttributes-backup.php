@@ -84,7 +84,6 @@ class ForumAttributes implements ExtenderInterface
             $settings = app(SettingsRepositoryInterface::class);
             
             // need to adjust this conditional logic: users who aren't logged in should still see the fields...
-            // basically made it more permissive, since final settings are made inside the admin.
 
             $canFill = $event->actor->can('raafirivero.mason.fill-fields');
             $canSeeSome = $event->actor->can('raafirivero.mason.see-other-fields') || $event->actor->can('raafirivero.mason.see-own-fields');
@@ -92,12 +91,17 @@ class ForumAttributes implements ExtenderInterface
             if ($canFill || $canSeeSome) {
                 $event->attributes['raafirivero.mason.fields-section-title'] = $settings->get('raafirivero.mason.fields-section-title', '');
                 $event->attributes['raafirivero.mason.column-count'] = (int) $settings->get('raafirivero.mason.column-count', 1);
-                $event->attributes['raafirivero.mason.by-tag'] = (bool) $settings->get('raafirivero.mason.by-tag', false);
+                // $event->attributes['raafirivero.mason.by-tag'] = (bool) $settings->get('raafirivero.mason.by-tag', false);
+            }
 
+            if ($canFill) {
                 $event->attributes['raafirivero.mason.labels-as-placeholders'] = (bool) $settings->get('raafirivero.mason.labels-as-placeholders', false);
                 $event->attributes['raafirivero.mason.tags-as-fields'] = (bool) $settings->get('raafirivero.mason.tags-as-fields', false);
                 $event->attributes['raafirivero.mason.tags-field-name'] = $settings->get('raafirivero.mason.tags-field-name', '');
+                $event->attributes['raafirivero.mason.by-tag'] = (bool) $settings->get('raafirivero.mason.by-tag', false);
+            }
 
+            if ($canSeeSome) {
                 $event->attributes['raafirivero.mason.fields-in-hero'] = (bool) $settings->get('raafirivero.mason.fields-in-hero', false);
                 $event->attributes['raafirivero.mason.hide-empty-fields-section'] = (bool) $settings->get('raafirivero.mason.hide-empty-fields-section', false);
             }

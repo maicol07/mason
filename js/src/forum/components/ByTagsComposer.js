@@ -20,6 +20,7 @@ export default class ByTagsComposer extends Component {
 
         for ( let i = 0; i < tags.length; i++){   
             let fields = [];
+            let fieldIDs = [];
             var tagName = tags[i].data.attributes.name;
             let tagsObj = {};
 
@@ -31,9 +32,10 @@ export default class ByTagsComposer extends Component {
 
                 usedList.forEach(function(e){
                     fields.push(JSON.parse(e.data.attributes.allowed_field));
+                    fieldIDs.push(e.data.id);
                 });
 
-                tagsObj = {tagName,fields};
+                tagsObj = {tagName,fields,fieldIDs};
                 tagsList.push(tagsObj);
             }
         }

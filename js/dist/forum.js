@@ -153,13 +153,13 @@ __webpack_require__.r(__webpack_exports__);
   flarum_components_DiscussionComposer__WEBPACK_IMPORTED_MODULE_2___default.a.prototype.raafiriveroMasonAnswers = [];
   var byTagEnabled = flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.data.resources[0].attributes['raafirivero.mason.by-tag'];
   var ByTagsUnit = new _components_ByTagsComposer__WEBPACK_IMPORTED_MODULE_6__["default"]();
-  var dTag = ''; // let fieldsByTags = new FieldsEditorByTags;
-
+  var dTag = '';
   Object(flarum_extend__WEBPACK_IMPORTED_MODULE_0__["extend"])(flarum_tags_components_TagDiscussionModal__WEBPACK_IMPORTED_MODULE_7___default.a.prototype, 'onsubmit', function (e) {
     // get name of the tag selected in the modal
     if (this.selected == false) {
       // send a command to empty the field here
-      dTag = '';
+      dTag = ''; // DC.init();
+
       return;
     }
 
@@ -179,14 +179,13 @@ __webpack_require__.r(__webpack_exports__);
 
     if (byTagEnabled) {
       // fields selectively show up on byTag posts
-      var myFields = []; //console.log(dTag);
+      var myFields = [];
 
       for (var i = 0; i < matchingTags.length; i++) {
         if (matchingTags[i].tagName == dTag) {
           myFields = matchingTags[i].fields;
         }
       } // myFields is a list of only fields that match the selected tag
-      //if(myFields[0]) {
 
 
       items.add('raafirivero-mason-fields', _components_FieldsEditorByTags__WEBPACK_IMPORTED_MODULE_5__["default"].component({
@@ -195,9 +194,9 @@ __webpack_require__.r(__webpack_exports__);
         onchange: function onchange(answers) {
           _this.raafiriveroMasonAnswers = answers;
         }
-      })); // }
-      // this.matchingTag = tempStorage.filter(match => match.data.attributes.tag_name == this.tag);
+      }));
     } else {
+      // console.log("the old way");
       // show the fields on every post. (the original setup for the plugin)
       items.add('raafirivero-mason-fields', _components_FieldsEditor__WEBPACK_IMPORTED_MODULE_4__["default"].component({
         answers: this.raafiriveroMasonAnswers,
@@ -213,14 +212,21 @@ __webpack_require__.r(__webpack_exports__);
   Object(flarum_extend__WEBPACK_IMPORTED_MODULE_0__["extend"])(flarum_components_DiscussionComposer__WEBPACK_IMPORTED_MODULE_2___default.a.prototype, 'data', function (data) {
     if (!flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.forum.canFillRaafiRiveroMasonFields()) {
       return;
-    } // may need a filter here - probably not for this plugin but for
-    // the Front-End extension that consumes it.
-    // console.log("data function:");
-    // console.log(data);
+    } // this sends only filled fields to the server
 
 
     data.relationships = data.relationships || {};
     data.relationships.raafiriveroMasonAnswers = this.raafiriveroMasonAnswers;
+  });
+  Object(flarum_extend__WEBPACK_IMPORTED_MODULE_0__["override"])(flarum_components_DiscussionComposer__WEBPACK_IMPORTED_MODULE_2___default.a.prototype, 'onsubmit', function () {
+    this.loading = true;
+    var data = this.data();
+    console.log(data);
+    flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.store.createRecord('discussions').save(data).then(function (discussion) {
+      flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.composer.hide();
+      flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.cache.discussionList.refresh();
+      m.route(flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.route.discussion(discussion));
+    }, this.loaded.bind(this));
   });
 });
 
@@ -300,11 +306,12 @@ __webpack_require__.r(__webpack_exports__);
   Object(flarum_extend__WEBPACK_IMPORTED_MODULE_0__["override"])(flarum_components_Composer__WEBPACK_IMPORTED_MODULE_3___default.a.prototype, 'animateToPosition', function (original, position) {
     // we need to detect if there are any mason fields present and if there are
     // add their height to the default height of the composer window
+    // we have to show the composer in order to get the current height from it,
+    // otherwise the fields are not drawn yet
     var $composer = this.$().stop(true);
     var composerHeight = $composer.outerHeight();
     m.redraw(true);
-    $composer.show(); //const $composer = this.$();
-
+    $composer.show();
     var headerHeight = this.$('.ComposerBody-header').outerHeight();
 
     if (position === flarum_components_Composer__WEBPACK_IMPORTED_MODULE_3___default.a.PositionEnum.NORMAL && composerHeight < headerHeight) {
@@ -425,6 +432,7 @@ function (_Component) {
 
     var _loop = function _loop(i) {
       var fields = [];
+      var fieldIDs = [];
       tagName = tags[i].data.attributes.name;
       var tagsObj = {};
       usedList = tempStorage.filter(function (match) {
@@ -435,10 +443,12 @@ function (_Component) {
       if (usedList[0]) {
         usedList.forEach(function (e) {
           fields.push(JSON.parse(e.data.attributes.allowed_field));
+          fieldIDs.push(e.data.id);
         });
         tagsObj = {
           tagName: tagName,
-          fields: fields
+          fields: fields,
+          fieldIDs: fieldIDs
         };
         tagsList.push(tagsObj);
       }
@@ -1112,24 +1122,7 @@ function (_Component) {
   _proto.init = function init(bytags) {
     var _this = this;
 
-    //let allFields = sortByAttribute(app.store.all('raafirivero-mason-field'));
-    this.fields = Object(_lib_helpers_sortByAttribute__WEBPACK_IMPORTED_MODULE_5__["default"])(flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.store.all('raafirivero-mason-field'));
-    var smallList = [];
-    var tagslist = bytags; // console.log("init");
-
-    if (tagslist) {
-      // double loop here. gotta find a simpler way
-      for (var i = 0; i < tagslist.length; i++) {
-        for (var j = 0; j < allFields.length; j++) {
-          if (tagslist[i] == allFields[j].data.attributes.name) {
-            smallList.push(allFields[j]);
-          }
-        }
-      }
-    } //this.fields = smallList;
-    //console.log(this.fields);
-    // Index to quickly do a reverse lookup from answer to field
-
+    this.fields = Object(_lib_helpers_sortByAttribute__WEBPACK_IMPORTED_MODULE_5__["default"])(flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.store.all('raafirivero-mason-field')); // Index to quickly do a reverse lookup from answer to field
 
     this.answerToFieldIndex = [];
     this.fields.forEach(function (field) {

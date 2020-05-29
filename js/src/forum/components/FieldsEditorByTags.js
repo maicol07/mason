@@ -10,27 +10,7 @@ import FieldGrid from './FieldGrid';
 
 export default class FieldsEditorByTags extends Component {
     init(bytags) {
-        //let allFields = sortByAttribute(app.store.all('raafirivero-mason-field'));
         this.fields = sortByAttribute(app.store.all('raafirivero-mason-field'));
-        let smallList = [];
-        let tagslist = bytags;
-
-        // console.log("init");
-
-        if (tagslist) {
-            // double loop here. gotta find a simpler way
-            for ( let i = 0; i < tagslist.length ; i++ ) {
-                for ( let j = 0; j < allFields.length ; j++ ) {
-                    if (tagslist[i] == allFields[j].data.attributes.name) {
-                        smallList.push(allFields[j]);
-                    }
-                }
-            }
-        }
-
-        //this.fields = smallList;
-
-        //console.log(this.fields);
 
         // Index to quickly do a reverse lookup from answer to field
         this.answerToFieldIndex = [];

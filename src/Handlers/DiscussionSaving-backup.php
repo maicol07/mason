@@ -49,8 +49,6 @@ class DiscussionSaving
     public function __invoke(Saving $event)
     {
         $hasAnswersData = isset($event->data['relationships']['raafiriveroMasonAnswers']['data']);
-        
-        $hasTagsToValidateData = isset($event->data['relationships']['tagsToValidate']['data']);
 
         if ($event->discussion->exists) { // Discussion update
             // If we're updating a discussion, we only handle fields update if fields attribute is given
@@ -83,17 +81,10 @@ class DiscussionSaving
     {
         $newAnswerIds = [];
         $answersPerField = [];
-        
 
         $answerRelations = Arr::get($event->data, 'relationships.raafiriveroMasonAnswers.data', []);
-        $currentTag =  Arr::get($event->data, 'relationships.tags.data', []);
-        $tagid = $currentTag[0]['id'];
-        //$tagid = $currentTag[0]['id'];
-        //error_log(print_r($tagid, true));
-        // error_log(print_r($currentTag[0]['id'], true));
 
         foreach ($answerRelations as $answerRelation) {
-            
             $answer = null;
 
             if ($id = Arr::get($answerRelation, 'id')) {
@@ -128,55 +119,20 @@ class DiscussionSaving
 
             $newAnswerIds[] = $answer->id;
             $answersPerField[$answer->field->id] = Arr::get($answersPerField, $answer->field->id, 0) + 1;
-            
-            //$count = Arr::get($answersPerField, $field->id, 0);
-            // error_log(print_r($answerRelation, true));
-
-            // thought I had it, but this just validates the active fields instead of validating the one that passes no
-            // value to answers per field
-            // $this->validateAnswerCount($answer->field, $count);
-            // this number represents how many answers the user has given: Arr::get($answersPerField, $answer->field->id, 0
-
-            // I think we can validate from here
         }
 
-        $attachedFields = [];
-        $fieldsBytag = [];
-        // now build an array of all fields turned on attached to that Tag
-
-        foreach ( $this->bytags->all() as $bytag ) {
-            if( $bytag['tag_id'] == $tagid && $bytag['switch'] == true ) {
-                // if a Tag's matching fields are enabled, add to a list
-                $attachedFields[] = json_decode($bytag['allowed_field']);
-            }
-
-        }
-
-        // form a list of full-size field objects based on this list
-        foreach ($this->fields->all() as $field) { 
-            if (in_array($field['name'] , $attachedFields)) {
-
-                $fieldsBytag[] = $field;
-            }
-        }
-
-
-        // use this list (instead of all fields) to validate the user responses:
-        foreach ($fieldsBytag as $field) {
-        //$this->fields->all()->each(function ($field) use ($event, $answersPerField) {
+        $this->fields->all()->each(function ($field) use ($event, $answersPerField) {
+            // this is where it fails, I think. It checks every field instead of just the ones sent.
 
             // If the actor can skip fields, no need to check their number
-            // if ($event->actor->can('skipField', $field)) {
-            //     return;
-            // }
+            if ($event->actor->can('skipField', $field)) {
+                return;
+            }
 
-            // if the field ID doesn't match the ids from $answersPerField, don't validate it
             $count = Arr::get($answersPerField, $field->id, 0);
-            // error_log(print_r("field id: " . $field['id'], true));
-            // error_log(print_r("da count: " . $count, true));
 
             $this->validateAnswerCount($field, $count);
-        }
+        });
 
         $event->discussion->afterSave(function ($discussion) use ($newAnswerIds) {
             $discussion->raafiriveroMasonAnswers()->sync($newAnswerIds);
