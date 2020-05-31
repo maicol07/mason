@@ -1,4 +1,5 @@
 import app from 'flarum/app';
+import Model from 'flarum/Model';
 import icon from 'flarum/helpers/icon';
 import Component from 'flarum/Component';
 import sortByAttribute from './../../lib/helpers/sortByAttribute';
@@ -28,6 +29,12 @@ export default class FieldEditDropdown extends Component {
             }
         });
 
+        let relationshipInfo = {
+                field: {
+                    data: Model.getIdentifier(this.field),
+                },
+            };
+
         return m('span.Select', [
             m('select.Select-input.FormControl', {
                 multiple: this.field.multiple(),
@@ -40,12 +47,18 @@ export default class FieldEditDropdown extends Component {
 
                             // This will only work with suggested answers for now
                             // As they are the only ones registered in the store
-                            answers.push(app.store.getById('raafirivero-mason-answer', answerId));
+                            
+                            // need to add field relationship in order to avoid JS error on
+                            // the text entry side
+                            let storeObj = app.store.getById('raafirivero-mason-answer', answerId);
+                            storeObj.data.relationships = relationshipInfo;
+                            answers.push(storeObj);
                         }
                     }
 
                     this.onchange(answers);
                 },
+
             }, [
                 (this.field.multiple() ? null : m('option', {
                     value: 'none',

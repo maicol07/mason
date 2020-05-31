@@ -7,17 +7,24 @@ export default class FieldEditText extends Component {
         this.field = this.props.field;
         this.answers = this.props.answers;
         this.onchange = this.props.onchange;
+        this.inputid = "masoninput"+this.props.inputid;
 
         this.content = '';
+        var answersForThisField = [];
 
-        const answersForThisField = this.answers.filter(answer => {
-            // Temporary store entries seem to turn into undefined after saving
-            if (typeof answer === 'undefined') {
-                return false;
-            }
+        if (typeof this.answers === 'undefined') {
+            answersForThisField = false; 
+        } else {
 
-            return answer.field().id() === this.field.id();
-        });
+            answersForThisField = this.answers.filter(answer => {
+                // Temporary store entries seem to turn into undefined after saving
+                if (typeof answer === 'undefined') {
+                    return false;
+                }
+                return answer.field().id() === this.field.id();
+            });
+
+        }
 
         if (answersForThisField.length) {
             // For now we only support a single custom answer
@@ -29,6 +36,7 @@ export default class FieldEditText extends Component {
         return m('input.FormControl', {
             required: this.field.required(),
             value: this.content,
+            class: this.inputid,
             oninput: m.withAttr('value', value => {
                 this.content = value;
 

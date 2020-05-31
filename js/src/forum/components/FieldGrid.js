@@ -1,13 +1,12 @@
 import app from 'flarum/app';
 import Component from 'flarum/Component';
-import chunkArray from './../helpers/chunkArray';
 
 export default class FieldGrid extends Component {
     view() {
-        return m('.Mason-Grid-Wrapper', m('.Mason-Grid', chunkArray(this.props.items, app.forum.attribute('raafirivero.mason.column-count')).map(
-            row => m('.Mason-Row', row.map(
-                item => m('.Mason-Column', item)
-            ))
-        )));
+        let columnClass = "masoncol" + app.forum.attribute('raafirivero.mason.column-count');
+        return m('.Mason-Grid-Wrapper', m('.Mason-Grid',{class:columnClass}, [
+                this.props.items
+            ])
+        );
     }
 }

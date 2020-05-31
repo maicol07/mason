@@ -65,21 +65,28 @@
     }
 
     .Mason-Grid {
-        display: table;
+        // display: table;
+        display: grid;
+        width: 100%;
+        
+    }
+
+    .masoncol1 {
+        grid-template-columns: 100%;
+    }
+
+    .masoncol2 {
+        grid-template-columns: repeat(2, 48%);
+        grid-column-gap: 4%;
+    }
+
+    .masoncol3 {
+        grid-template-columns: 31% 31% 31%;
+        grid-column-gap: 3%;
+    }
+
+    .Mason-Grid select {
         width: 100%;
     }
 
-    .Mason-Row {
-        display: table-row;
-    }
-
-    .Mason-Column {
-        display: table-cell;
-        padding: 5px 10px;
-    }
-
-    .Mason-Row:last-of-type .Mason-Column {
-        // Do not apply the .Form-group -like margin for the items of the last row
-        margin-bottom: 0;
-    }
 }

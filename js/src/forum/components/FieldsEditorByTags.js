@@ -9,7 +9,7 @@ import FieldEditTags from './FieldEditTags';
 import FieldGrid from './FieldGrid';
 
 export default class FieldsEditorByTags extends Component {
-    init(bytags) {
+    init() {
         this.fields = sortByAttribute(app.store.all('raafirivero-mason-field'));
 
         // Index to quickly do a reverse lookup from answer to field
@@ -26,6 +26,7 @@ export default class FieldsEditorByTags extends Component {
     }
 
     view() {
+        
         return m('form.Mason-Fields.Mason-Fields--editor', {
             onsubmit(event) {
                 event.preventDefault();
@@ -33,6 +34,7 @@ export default class FieldsEditorByTags extends Component {
         }, [
             this.headItems().toArray(),
             FieldGrid.component({
+                //items: this.fieldItems() // this.fieldItems().toArray(),
                 items: this.fieldItems().toArray(),
             }),
         ]);
@@ -65,7 +67,6 @@ export default class FieldsEditorByTags extends Component {
         if (app.forum.attribute('raafirivero.mason.fields-section-title')) {
             items.add('title', m('h5.Mason-Field--title', app.forum.attribute('raafirivero.mason.fields-section-title')));
         }
-
         return items;
     }
 
@@ -89,6 +90,7 @@ export default class FieldsEditorByTags extends Component {
             const inputAttrs = {
                 field,
                 bytags: this.props.bytags,
+                inputid:field.data.id,
                 answers: this.props.answers,
                 onchange: fieldAnswers => {
                     // Every input component calls "onchange" with a list of answers from the store
@@ -98,16 +100,14 @@ export default class FieldsEditorByTags extends Component {
             let input = null;
 
             if (field.user_values_allowed()) {
-                input = FieldEditText.component(inputAttrs);
+                input = new FieldEditText(inputAttrs);
             } else {
-                input = FieldEditDropdown.component(inputAttrs);
+                input = new FieldEditDropdown(inputAttrs);
             }
 
-            // if this field is in the list, then add it to items, otherwise, nada.
             this.props.bytags.forEach( tag => {
-                
+                // filter the items list for fields we actually need
                 if ( tag == field.data.attributes.name ) {
-
                     items.add('field-' + field.id(), m('.Mason-Field.Form-group', {
                         className: app.forum.attribute('raafirivero.mason.labels-as-placeholders') ? 'Mason-Field--label-as-placeholder' : '',
                     }, [
@@ -119,12 +119,16 @@ export default class FieldsEditorByTags extends Component {
                         input,
                         (field.description() ? m('.helpText', field.description()) : null),
                     ]));
-
                 }
-
             })
+                
         });
 
+
         return items;
+    }
+
+    flush() {
+        // console.log(this);
     }
 }
