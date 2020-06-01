@@ -2066,6 +2066,7 @@ function (_Component) {
     this.fieldsSectionTitle = m.prop(flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.data.settings['raafirivero.mason.fields-section-title'] || '');
     this.columnCount = m.prop(flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.data.settings['raafirivero.mason.column-count'] || 1);
     this.byTag = m.prop(flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.data.settings['raafirivero.mason.by-tag'] > 0);
+    this.composerHeight = m.prop(flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.data.settings['raafirivero.mason.composer-height'] || '350');
     this.labelsAsPlaceholders = m.prop(flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.data.settings['raafirivero.mason.labels-as-placeholders'] > 0);
     this.fieldsInHero = m.prop(flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.data.settings['raafirivero.mason.fields-in-hero'] > 0);
     this.hideEmptyFieldsSection = m.prop(flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.data.settings['raafirivero.mason.hide-empty-fields-section'] > 0);
@@ -2077,11 +2078,7 @@ function (_Component) {
       this.columnOptions[i] = flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('raafirivero-mason.admin.settings.n-columns', {
         count: i
       });
-    } //console.log(app);
-    //console.log(app.store.all('raafirivero-mason-fields'));
-    //setTimeout(function(){console.log(app.store.data['raafirivero-mason-bytag'])}, 3000);
-    //setTimeout(function(){console.log(app.store.all('raafirivero-mason-bytag'))}, 3000);
-
+    }
   };
 
   _proto.view = function view() {
@@ -2104,11 +2101,20 @@ function (_Component) {
       state: this.byTag(),
       onchange: this.updateSetting.bind(this, this.byTag, 'raafirivero.mason.by-tag'),
       children: flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('raafirivero-mason.admin.settings.by-tag')
-    }))]), this.byTag() ? m('.Form-group', [m('label', flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('raafirivero-mason.admin.settings.by-tag-name')), tagsList]) : null, m('hr'), m('.Form-group', [m('label', flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('raafirivero-mason.admin.settings.fields-section-title')), m('input.FormControl', {
-      value: this.fieldsSectionTitle(),
-      placeholder: flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('raafirivero-mason.admin.settings.fields-section-title-placeholder'),
-      onchange: m.withAttr('value', this.updateSetting.bind(this, this.fieldsSectionTitle, 'raafirivero.mason.fields-section-title'))
-    }), m('.helpText', flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('raafirivero-mason.admin.settings.fields-section-title-help'))]), m('.Form-group', [m('label', flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('raafirivero-mason.admin.settings.column-count')), flarum_components_Select__WEBPACK_IMPORTED_MODULE_5___default.a.component({
+    }))]), this.byTag() ? m('.Form-group', [m('label', flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('raafirivero-mason.admin.settings.by-tag-name')), tagsList]) : null, m('hr'), m('.Form-group', [m('label', flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('raafirivero-mason.admin.settings.composer-height')), m('input.FormControl', {
+      value: this.composerHeight(),
+      placeholder: flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('raafirivero-mason.admin.settings.composer-height-placeholder'),
+      onchange: m.withAttr('value', this.updateSetting.bind(this, this.composerHeight, 'raafirivero.mason.composer-height'))
+    }), m('.helpText', flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('raafirivero-mason.admin.settings.composer-height-help'))]), // m('.Form-group', [
+    //     m('label', app.translator.trans('raafirivero-mason.admin.settings.fields-section-title')),
+    //     m('input.FormControl', {
+    //         value: this.fieldsSectionTitle(),
+    //         placeholder: app.translator.trans('raafirivero-mason.admin.settings.fields-section-title-placeholder'),
+    //         onchange: m.withAttr('value', this.updateSetting.bind(this, this.fieldsSectionTitle, 'raafirivero.mason.fields-section-title')),
+    //     }),
+    //     m('.helpText', app.translator.trans('raafirivero-mason.admin.settings.fields-section-title-help')),
+    // ]),
+    m('.Form-group', [m('label', flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('raafirivero-mason.admin.settings.column-count')), flarum_components_Select__WEBPACK_IMPORTED_MODULE_5___default.a.component({
       options: this.columnOptions,
       value: this.columnCount(),
       onchange: this.updateSetting.bind(this, this.columnCount, 'raafirivero.mason.column-count')
@@ -2124,15 +2130,7 @@ function (_Component) {
       state: this.hideEmptyFieldsSection(),
       onchange: this.updateSetting.bind(this, this.hideEmptyFieldsSection, 'raafirivero.mason.hide-empty-fields-section'),
       children: flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('raafirivero-mason.admin.settings.hide-empty-fields-section')
-    })), m('.helpText', flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('raafirivero-mason.admin.settings.hide-empty-fields-section-help'))]), m('.Form-group', [m('label', flarum_components_Switch__WEBPACK_IMPORTED_MODULE_6___default.a.component({
-      state: this.tagsAsFields(),
-      onchange: this.updateSetting.bind(this, this.tagsAsFields, 'raafirivero.mason.tags-as-fields'),
-      children: flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('raafirivero-mason.admin.settings.tags-as-field')
-    })), m('.helpText', flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('raafirivero-mason.admin.settings.tags-as-field-help'))]), this.tagsAsFields() ? m('.Form-group', [m('label', flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('raafirivero-mason.admin.settings.tags-field-name')), m('input.FormControl', {
-      value: this.tagsFieldName(),
-      placeholder: flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('raafirivero-mason.admin.settings.tags-field-name-placeholder'),
-      onchange: m.withAttr('value', this.updateSetting.bind(this, this.tagsFieldName, 'raafirivero.mason.tags-field-name'))
-    })]) : null]);
+    })), m('.helpText', flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('raafirivero-mason.admin.settings.hide-empty-fields-section-help'))])]);
   }
   /**
    * Updates setting in database.
@@ -2483,10 +2481,10 @@ function (_Component) {
         field: field
       })));
     });
-    return m('.container', [m('h2', flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('raafirivero-mason.admin.titles.settings')), _components_MasonSettings__WEBPACK_IMPORTED_MODULE_6__["default"].component(), m('h2', flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('raafirivero-mason.admin.titles.fields')), m('.Mason-Container', [m('.js-fields-container', fieldsList), _components_FieldEdit__WEBPACK_IMPORTED_MODULE_3__["default"].component({
+    return m('.container', [m('h2', flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('raafirivero-mason.admin.titles.fields')), m('.Mason-Container', [m('.js-fields-container', fieldsList), _components_FieldEdit__WEBPACK_IMPORTED_MODULE_3__["default"].component({
       key: 'new',
       field: null
-    })])]);
+    })]), m('h2', flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('raafirivero-mason.admin.titles.settings')), _components_MasonSettings__WEBPACK_IMPORTED_MODULE_6__["default"].component()]);
   };
 
   _proto.updateSort = function updateSort(sorting) {

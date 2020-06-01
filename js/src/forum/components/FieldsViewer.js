@@ -4,7 +4,6 @@ import ItemList from 'flarum/utils/ItemList';
 import Component from 'flarum/Component';
 import Button from 'flarum/components/Button';
 import FieldsEditorModal from './FieldsEditorModal';
-import FieldGrid from './FieldGrid';
 import sortByAttribute from './../../lib/helpers/sortByAttribute';
 
 export default class FieldsViewer extends Component {
@@ -25,11 +24,11 @@ export default class FieldsViewer extends Component {
             return m('div');
         }
 
-        return m('.Mason-Fields.Mason-Fields--viewer', [
+        return m('.Mason-Discussion', [
             head,
-            FieldGrid.component({
-                items: fields,
-            }),
+            m('.Mason-divider','–'),
+            m('.Mason-Set',{class:"masonjson"}, fields ),
+            m('.Mason-divider','–'),
         ]);
     }
 
@@ -76,12 +75,12 @@ export default class FieldsViewer extends Component {
                 }
             }
 
-            items.add('field-' + field.id(), m('.Mason-Field.Form-group', [
+            items.add('field-' + field.id(), m('.Mason-item', [
                 m('label', [
                     (field.icon() ? [icon(field.icon()), ' '] : null),
-                    field.name(),
+                    field.name()+ ": ",
                 ]),
-                m('.FormControl.Mason-Inline-Answers', answer_list),
+                m('.Mason-Answers', answer_list),
             ]));
         });
 

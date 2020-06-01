@@ -1,4 +1,4 @@
-import {extend, override} from 'flarum/extend';
+import { extend } from 'flarum/extend';
 import app from 'flarum/app';
 import DiscussionComposer from 'flarum/components/DiscussionComposer';
 import Composer from 'flarum/components/Composer';
@@ -6,6 +6,7 @@ import FieldsEditor from './components/FieldsEditor';
 import FieldsEditorByTags from './components/FieldsEditorByTags';
 import ByTagsComposer from './components/ByTagsComposer';
 import TagDiscussionModal from 'flarum/tags/components/TagDiscussionModal';
+
 
 
 export default function () {
@@ -20,7 +21,7 @@ export default function () {
         // get name of the tag selected in the modal
 
         if (this.selected == false) {
-            // send a command to empty the field here
+            // if no tag is selected, empty the header
             dTag = '';      
             return;
         }
@@ -31,7 +32,6 @@ export default function () {
     extend(Composer.prototype, 'hide', function(e) {
         // remove the the fields from the headerItems...
         dTag = '';
-
     })
 
 
@@ -47,7 +47,7 @@ export default function () {
 
         if(byTagEnabled) {
 
-            // fields selectively show up on byTag posts
+            
             this.myFields = [];
 
             for (let i = 0; i < matchingTags.length; i++) {
@@ -55,7 +55,7 @@ export default function () {
                     this.myFields = matchingTags[i].fields;
                 }
             }
-            // this.myFields is a list of only fields that match the selected tag
+            // this.myFields is a list of fields that match the selected tag only
 
 
             if(tagChanged != dTag) {

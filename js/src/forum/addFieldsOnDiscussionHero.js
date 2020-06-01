@@ -25,13 +25,25 @@ export default function () {
         const composerHeight = $composer.outerHeight();
         m.redraw(true);
         $composer.show();
+        let newComposerHeight = '';
 
-        const headerHeight = this.$('.ComposerBody-header').outerHeight();
+        // const headerHeight = this.$('.ComposerBody-header').outerHeight();
 
-        if (position === Composer.PositionEnum.NORMAL && composerHeight < headerHeight) {
-            this.height = headerHeight + composerHeight;
-            this.updateHeight();
+        // if (position === Composer.PositionEnum.NORMAL && composerHeight < headerHeight) {
+        //     this.height = headerHeight + composerHeight;
+        //     this.updateHeight();
+        // }
+
+        // get composer height setting from admin
+        if (app.forum.attribute('raafirivero.mason.composer-height')) {
+            newComposerHeight = app.forum.attribute('raafirivero.mason.composer-height');
+        } else {
+            newComposerHeight = 320;
         }
+
+        this.height = newComposerHeight;
+        this.updateHeight();
+
 
         return original(position);
     });

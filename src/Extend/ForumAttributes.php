@@ -91,6 +91,7 @@ class ForumAttributes implements ExtenderInterface
 
             if ($canFill || $canSeeSome) {
                 $event->attributes['raafirivero.mason.fields-section-title'] = $settings->get('raafirivero.mason.fields-section-title', '');
+                $event->attributes['raafirivero.mason.composer-height'] = $settings->get('raafirivero.mason.composer-height', '');
                 $event->attributes['raafirivero.mason.column-count'] = (int) $settings->get('raafirivero.mason.column-count', 1);
                 $event->attributes['raafirivero.mason.by-tag'] = (bool) $settings->get('raafirivero.mason.by-tag', false);
 

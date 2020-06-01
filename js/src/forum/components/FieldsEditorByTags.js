@@ -26,7 +26,7 @@ export default class FieldsEditorByTags extends Component {
     }
 
     view() {
-        
+
         return m('form.Mason-Fields.Mason-Fields--editor', {
             onsubmit(event) {
                 event.preventDefault();
@@ -34,10 +34,10 @@ export default class FieldsEditorByTags extends Component {
         }, [
             this.headItems().toArray(),
             FieldGrid.component({
-                //items: this.fieldItems() // this.fieldItems().toArray(),
                 items: this.fieldItems().toArray(),
             }),
         ]);
+
     }
 
     updateSelection(field, fieldAnswers) {
@@ -128,7 +128,4 @@ export default class FieldsEditorByTags extends Component {
         return items;
     }
 
-    flush() {
-        // console.log(this);
-    }
 }

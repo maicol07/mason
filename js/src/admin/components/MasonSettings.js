@@ -12,6 +12,7 @@ export default class MasonSettings extends Component {
         this.fieldsSectionTitle = m.prop(app.data.settings['raafirivero.mason.fields-section-title'] || '');
         this.columnCount = m.prop(app.data.settings['raafirivero.mason.column-count'] || 1);
         this.byTag = m.prop(app.data.settings['raafirivero.mason.by-tag'] > 0);
+        this.composerHeight = m.prop(app.data.settings['raafirivero.mason.composer-height'] || '350');
         this.labelsAsPlaceholders = m.prop(app.data.settings['raafirivero.mason.labels-as-placeholders'] > 0);
         this.fieldsInHero = m.prop(app.data.settings['raafirivero.mason.fields-in-hero'] > 0);
         this.hideEmptyFieldsSection = m.prop(app.data.settings['raafirivero.mason.hide-empty-fields-section'] > 0);
@@ -23,12 +24,6 @@ export default class MasonSettings extends Component {
         for (let i = 1; i <= 3; i++) {
             this.columnOptions[i] = app.translator.trans('raafirivero-mason.admin.settings.n-columns', {count: i});
         }
-        
-        //console.log(app);
-        //console.log(app.store.all('raafirivero-mason-fields'));
-        //setTimeout(function(){console.log(app.store.data['raafirivero-mason-bytag'])}, 3000);
-        //setTimeout(function(){console.log(app.store.all('raafirivero-mason-bytag'))}, 3000);
-
 
     }
 
@@ -61,14 +56,23 @@ export default class MasonSettings extends Component {
             ]) : null),
             m('hr'),
             m('.Form-group', [
-                m('label', app.translator.trans('raafirivero-mason.admin.settings.fields-section-title')),
+                m('label', app.translator.trans('raafirivero-mason.admin.settings.composer-height')),
                 m('input.FormControl', {
-                    value: this.fieldsSectionTitle(),
-                    placeholder: app.translator.trans('raafirivero-mason.admin.settings.fields-section-title-placeholder'),
-                    onchange: m.withAttr('value', this.updateSetting.bind(this, this.fieldsSectionTitle, 'raafirivero.mason.fields-section-title')),
+                    value: this.composerHeight(),
+                    placeholder: app.translator.trans('raafirivero-mason.admin.settings.composer-height-placeholder'),
+                    onchange: m.withAttr('value', this.updateSetting.bind(this, this.composerHeight, 'raafirivero.mason.composer-height')),
                 }),
-                m('.helpText', app.translator.trans('raafirivero-mason.admin.settings.fields-section-title-help')),
+                m('.helpText', app.translator.trans('raafirivero-mason.admin.settings.composer-height-help')),
             ]),
+            // m('.Form-group', [
+            //     m('label', app.translator.trans('raafirivero-mason.admin.settings.fields-section-title')),
+            //     m('input.FormControl', {
+            //         value: this.fieldsSectionTitle(),
+            //         placeholder: app.translator.trans('raafirivero-mason.admin.settings.fields-section-title-placeholder'),
+            //         onchange: m.withAttr('value', this.updateSetting.bind(this, this.fieldsSectionTitle, 'raafirivero.mason.fields-section-title')),
+            //     }),
+            //     m('.helpText', app.translator.trans('raafirivero-mason.admin.settings.fields-section-title-help')),
+            // ]),
             m('.Form-group', [
                 m('label', app.translator.trans('raafirivero-mason.admin.settings.column-count')),
                 Select.component({
@@ -100,22 +104,23 @@ export default class MasonSettings extends Component {
                 })),
                 m('.helpText', app.translator.trans('raafirivero-mason.admin.settings.hide-empty-fields-section-help')),
             ]),
-            m('.Form-group', [
-                m('label', Switch.component({
-                    state: this.tagsAsFields(),
-                    onchange: this.updateSetting.bind(this, this.tagsAsFields, 'raafirivero.mason.tags-as-fields'),
-                    children: app.translator.trans('raafirivero-mason.admin.settings.tags-as-field'),
-                })),
-                m('.helpText', app.translator.trans('raafirivero-mason.admin.settings.tags-as-field-help')),
-            ]),
-            (this.tagsAsFields() ? m('.Form-group', [
-                m('label', app.translator.trans('raafirivero-mason.admin.settings.tags-field-name')),
-                m('input.FormControl', {
-                    value: this.tagsFieldName(),
-                    placeholder: app.translator.trans('raafirivero-mason.admin.settings.tags-field-name-placeholder'),
-                    onchange: m.withAttr('value', this.updateSetting.bind(this, this.tagsFieldName, 'raafirivero.mason.tags-field-name')),
-                }),
-            ]) : null),
+            // turning this feature off - prefer to use the Flarum's native Tags selection object
+            // m('.Form-group', [
+            //     m('label', Switch.component({
+            //         state: this.tagsAsFields(),
+            //         onchange: this.updateSetting.bind(this, this.tagsAsFields, 'raafirivero.mason.tags-as-fields'),
+            //         children: app.translator.trans('raafirivero-mason.admin.settings.tags-as-field'),
+            //     })),
+            //     m('.helpText', app.translator.trans('raafirivero-mason.admin.settings.tags-as-field-help')),
+            // ]),
+            // (this.tagsAsFields() ? m('.Form-group', [
+            //     m('label', app.translator.trans('raafirivero-mason.admin.settings.tags-field-name')),
+            //     m('input.FormControl', {
+            //         value: this.tagsFieldName(),
+            //         placeholder: app.translator.trans('raafirivero-mason.admin.settings.tags-field-name-placeholder'),
+            //         onchange: m.withAttr('value', this.updateSetting.bind(this, this.tagsFieldName, 'raafirivero.mason.tags-field-name')),
+            //     }),
+            // ]) : null),
         ]);
     }
 

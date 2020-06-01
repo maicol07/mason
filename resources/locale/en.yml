@@ -78,6 +78,9 @@ raafirivero-mason:
             fields-section-title-placeholder: By default no title will be shown
             fields-section-title-help: >
                 Users will see this text above the custom fields in the editor and on the discussion.
+            composer-height: Composer Height
+            composer-height-placeholder: "320"
+            composer-height-help: default is 200, should be higher than that to accommodate fields.
             column-count: Number of columns when showing the fields
             n-columns: "{count} columns"
             by-tag: Apply metadata to specific tags only

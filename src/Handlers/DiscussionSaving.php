@@ -88,8 +88,9 @@ class DiscussionSaving
         $answerRelations = Arr::get($event->data, 'relationships.raafiriveroMasonAnswers.data', []);
         $currentTag =  Arr::get($event->data, 'relationships.tags.data', []);
         $tagid = $currentTag[0]['id'];
-        //$tagid = $currentTag[0]['id'];
-        //error_log(print_r($tagid, true));
+
+        // error_log(print_r($currentTag, true));
+        // error_log(print_r($event->data, true));
         // error_log(print_r($currentTag[0]['id'], true));
 
         foreach ($answerRelations as $answerRelation) {
@@ -128,16 +129,8 @@ class DiscussionSaving
 
             $newAnswerIds[] = $answer->id;
             $answersPerField[$answer->field->id] = Arr::get($answersPerField, $answer->field->id, 0) + 1;
-            
-            //$count = Arr::get($answersPerField, $field->id, 0);
-            // error_log(print_r($answerRelation, true));
 
-            // thought I had it, but this just validates the active fields instead of validating the one that passes no
-            // value to answers per field
-            // $this->validateAnswerCount($answer->field, $count);
-            // this number represents how many answers the user has given: Arr::get($answersPerField, $answer->field->id, 0
 
-            // I think we can validate from here
         }
 
         $attachedFields = [];
@@ -161,7 +154,7 @@ class DiscussionSaving
         }
 
 
-        // use this list (instead of all fields) to validate the user responses:
+        // use this list (instead of fields->all()) to validate the user responses:
         foreach ($fieldsBytag as $field) {
         //$this->fields->all()->each(function ($field) use ($event, $answersPerField) {
 
@@ -172,8 +165,6 @@ class DiscussionSaving
 
             // if the field ID doesn't match the ids from $answersPerField, don't validate it
             $count = Arr::get($answersPerField, $field->id, 0);
-            // error_log(print_r("field id: " . $field['id'], true));
-            // error_log(print_r("da count: " . $count, true));
 
             $this->validateAnswerCount($field, $count);
         }

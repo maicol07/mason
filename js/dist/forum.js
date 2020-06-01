@@ -158,7 +158,7 @@ __webpack_require__.r(__webpack_exports__);
   Object(flarum_extend__WEBPACK_IMPORTED_MODULE_0__["extend"])(flarum_tags_components_TagDiscussionModal__WEBPACK_IMPORTED_MODULE_7___default.a.prototype, 'onsubmit', function (e) {
     // get name of the tag selected in the modal
     if (this.selected == false) {
-      // send a command to empty the field here
+      // if no tag is selected, empty the header
       dTag = '';
       return;
     }
@@ -181,14 +181,13 @@ __webpack_require__.r(__webpack_exports__);
     var matchingTags = ByTagsUnit.matchTags();
 
     if (byTagEnabled) {
-      // fields selectively show up on byTag posts
       this.myFields = [];
 
       for (var i = 0; i < matchingTags.length; i++) {
         if (matchingTags[i].tagName == dTag) {
           this.myFields = matchingTags[i].fields;
         }
-      } // this.myFields is a list of only fields that match the selected tag
+      } // this.myFields is a list of fields that match the selected tag only
 
 
       if (tagChanged != dTag) {
@@ -311,13 +310,21 @@ __webpack_require__.r(__webpack_exports__);
     var composerHeight = $composer.outerHeight();
     m.redraw(true);
     $composer.show();
-    var headerHeight = this.$('.ComposerBody-header').outerHeight();
+    var newComposerHeight = ''; // const headerHeight = this.$('.ComposerBody-header').outerHeight();
+    // if (position === Composer.PositionEnum.NORMAL && composerHeight < headerHeight) {
+    //     this.height = headerHeight + composerHeight;
+    //     this.updateHeight();
+    // }
+    // get composer height setting from admin
 
-    if (position === flarum_components_Composer__WEBPACK_IMPORTED_MODULE_3___default.a.PositionEnum.NORMAL && composerHeight < headerHeight) {
-      this.height = headerHeight + composerHeight;
-      this.updateHeight();
+    if (flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.forum.attribute('raafirivero.mason.composer-height')) {
+      newComposerHeight = flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.forum.attribute('raafirivero.mason.composer-height');
+    } else {
+      newComposerHeight = 320;
     }
 
+    this.height = newComposerHeight;
+    this.updateHeight();
     return original(position);
   }); // extend(Composer.prototype, 'maximumHeight', function () {
   //     //console.log('4');
@@ -932,9 +939,9 @@ function (_Component) {
 
   _proto.view = function view() {
     var columnClass = "masoncol" + flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.forum.attribute('raafirivero.mason.column-count');
-    return m('.Mason-Grid-Wrapper', m('.Mason-Grid', {
+    return m('.Mason-Grid', {
       "class": columnClass
-    }, [this.props.items]));
+    }, this.props.items);
   };
 
   return FieldGrid;
@@ -1154,7 +1161,6 @@ function (_Component) {
         event.preventDefault();
       }
     }, [this.headItems().toArray(), _FieldGrid__WEBPACK_IMPORTED_MODULE_9__["default"].component({
-      //items: this.fieldItems() // this.fieldItems().toArray(),
       items: this.fieldItems().toArray()
     })]);
   };
@@ -1234,9 +1240,6 @@ function (_Component) {
     return items;
   };
 
-  _proto.flush = function flush() {// console.log(this);
-  };
-
   return FieldsEditorByTags;
 }(flarum_Component__WEBPACK_IMPORTED_MODULE_4___default.a);
 
@@ -1262,6 +1265,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var flarum_components_Button__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! flarum/components/Button */ "flarum/components/Button");
 /* harmony import */ var flarum_components_Button__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(flarum_components_Button__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _FieldsEditor__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./FieldsEditor */ "./src/forum/components/FieldsEditor.js");
+/* harmony import */ var _FieldsEditorByTags__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./FieldsEditorByTags */ "./src/forum/components/FieldsEditorByTags.js");
+/* harmony import */ var _ByTagsComposer__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./ByTagsComposer */ "./src/forum/components/ByTagsComposer.js");
+
+
 
 
 
@@ -1284,9 +1291,24 @@ function (_Modal) {
 
     this.answers = this.props.discussion.raafiriveroMasonAnswers();
     this.dirty = false;
-    this.processing = false; // Stays null if the feature is not used
+    this.processing = false;
+    this.tagRelationship = this.props.discussion.data.relationships.tags.data[0]; // Stays null if the feature is not used
 
     this.tags = null;
+    var ByTagsUnit = new _ByTagsComposer__WEBPACK_IMPORTED_MODULE_6__["default"]();
+    var matchingTags = ByTagsUnit.matchTags();
+    this.myFields = []; // annoying way to get current Tag name, but it works
+
+    var thisIncludes = this.props.discussion.payload.included;
+    var findTag = thisIncludes.find(function (element) {
+      return element.type == "tags";
+    });
+
+    for (var i = 0; i < matchingTags.length; i++) {
+      if (matchingTags[i].tagName == findTag.attributes.name) {
+        this.myFields = matchingTags[i].fields;
+      }
+    }
   };
 
   _proto.title = function title() {
@@ -1296,18 +1318,23 @@ function (_Modal) {
   };
 
   _proto.content = function content() {
-    var _this = this;
-
-    return [m('.Modal-body', _FieldsEditor__WEBPACK_IMPORTED_MODULE_4__["default"].component({
+    return [m('.Modal-body', _FieldsEditorByTags__WEBPACK_IMPORTED_MODULE_5__["default"].component({
       discussion: this.props.discussion,
       // Only for the tags feature
       answers: this.answers,
-      onchange: this.answersChanged.bind(this),
-      ontagchange: function ontagchange(tags) {
-        _this.tags = tags;
-        _this.dirty = true;
-      }
-    })), m('.Modal-footer', [flarum_components_Button__WEBPACK_IMPORTED_MODULE_3___default.a.component({
+      bytags: this.myFields,
+      tags: this.tags,
+      onchange: this.answersChanged.bind(this)
+    })), // m('.Modal-body', FieldsEditor.component({
+    //     discussion: this.props.discussion, // Only for the tags feature
+    //     answers: this.answers,
+    //     onchange: this.answersChanged.bind(this),
+    //     ontagchange: tags => {
+    //         this.tags = tags;
+    //         this.dirty = true;
+    //     },
+    // })),
+    m('.Modal-footer', [flarum_components_Button__WEBPACK_IMPORTED_MODULE_3___default.a.component({
       className: 'Button Button--primary',
       children: flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('raafirivero-mason.forum.answers-modal.save'),
       loading: this.processing,
@@ -1322,25 +1349,28 @@ function (_Modal) {
   };
 
   _proto.saveAnswers = function saveAnswers() {
-    var _this2 = this;
+    var _this = this;
 
     this.processing = true;
+    var tagRelationship = {
+      data: this.tagRelationship
+    };
     var relationships = {
+      tags: [tagRelationship],
       raafiriveroMasonAnswers: this.answers
     }; // If tag edit is enabled, take care of them here as well
-
-    if (this.tags !== null) {
-      relationships.tags = this.tags;
-    }
+    // if (this.tags !== null) {
+    //     relationships.tags = this.tags;
+    // }
 
     this.props.discussion.save({
       relationships: relationships
     }).then(function () {
-      _this2.processing = false;
+      _this.processing = false;
       flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.modal.close();
       m.redraw();
     })["catch"](function (err) {
-      _this2.processing = false;
+      _this.processing = false;
       throw err;
     });
   };
@@ -1374,9 +1404,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var flarum_components_Button__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! flarum/components/Button */ "flarum/components/Button");
 /* harmony import */ var flarum_components_Button__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(flarum_components_Button__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var _FieldsEditorModal__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./FieldsEditorModal */ "./src/forum/components/FieldsEditorModal.js");
-/* harmony import */ var _FieldGrid__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./FieldGrid */ "./src/forum/components/FieldGrid.js");
-/* harmony import */ var _lib_helpers_sortByAttribute__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./../../lib/helpers/sortByAttribute */ "./src/lib/helpers/sortByAttribute.js");
-
+/* harmony import */ var _lib_helpers_sortByAttribute__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./../../lib/helpers/sortByAttribute */ "./src/lib/helpers/sortByAttribute.js");
 
 
 
@@ -1398,7 +1426,7 @@ function (_Component) {
   var _proto = FieldsViewer.prototype;
 
   _proto.init = function init() {
-    this.fields = Object(_lib_helpers_sortByAttribute__WEBPACK_IMPORTED_MODULE_8__["default"])(flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.store.all('raafirivero-mason-field'));
+    this.fields = Object(_lib_helpers_sortByAttribute__WEBPACK_IMPORTED_MODULE_7__["default"])(flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.store.all('raafirivero-mason-field'));
     this.discussion = this.props.discussion;
   };
 
@@ -1413,9 +1441,9 @@ function (_Component) {
       return m('div');
     }
 
-    return m('.Mason-Fields.Mason-Fields--viewer', [head, _FieldGrid__WEBPACK_IMPORTED_MODULE_7__["default"].component({
-      items: fields
-    })]);
+    return m('.Mason-Discussion', [head, m('.Mason-divider', '–'), m('.Mason-Set', {
+      "class": "masonjson"
+    }, fields), m('.Mason-divider', '–')]);
   };
 
   _proto.headItems = function headItems() {
@@ -1449,7 +1477,7 @@ function (_Component) {
     var items = new flarum_utils_ItemList__WEBPACK_IMPORTED_MODULE_3___default.a();
     this.fields.forEach(function (field) {
       // Discussion answers to this field
-      var answers = Object(_lib_helpers_sortByAttribute__WEBPACK_IMPORTED_MODULE_8__["default"])(_this2.discussion.raafiriveroMasonAnswers().filter(function (answer) {
+      var answers = Object(_lib_helpers_sortByAttribute__WEBPACK_IMPORTED_MODULE_7__["default"])(_this2.discussion.raafiriveroMasonAnswers().filter(function (answer) {
         // It's necessary to compare the field() relationship
         // Because field.suggested_answers() won't contain new and user answers
         return answer.field().id() === field.id();
@@ -1467,7 +1495,7 @@ function (_Component) {
         }
       }
 
-      items.add('field-' + field.id(), m('.Mason-Field.Form-group', [m('label', [field.icon() ? [flarum_helpers_icon__WEBPACK_IMPORTED_MODULE_2___default()(field.icon()), ' '] : null, field.name()]), m('.FormControl.Mason-Inline-Answers', answer_list)]));
+      items.add('field-' + field.id(), m('.Mason-item', [m('label', [field.icon() ? [flarum_helpers_icon__WEBPACK_IMPORTED_MODULE_2___default()(field.icon()), ' '] : null, field.name() + ": "]), m('.Mason-Answers', answer_list)]));
     });
     return items;
   };
