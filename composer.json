@@ -28,7 +28,8 @@
         "source": "https://github.com/raafirivero/mason"
     },
     "require": {
-        "flarum/core": ">=0.1.0-beta.10"
+        "flarum/core": ">=0.1.0-beta.10",
+        "flarum/tags": ">=0.1.0-beta.13"
     },
     "extra": {
         "flarum-extension": {
