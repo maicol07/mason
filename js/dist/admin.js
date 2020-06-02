@@ -2481,10 +2481,10 @@ function (_Component) {
         field: field
       })));
     });
-    return m('.container', [m('h2', flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('raafirivero-mason.admin.titles.fields')), m('.Mason-Container', [m('.js-fields-container', fieldsList), _components_FieldEdit__WEBPACK_IMPORTED_MODULE_3__["default"].component({
+    return m('.container', [m('h2', flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('raafirivero-mason.admin.titles.settings')), _components_MasonSettings__WEBPACK_IMPORTED_MODULE_6__["default"].component(), m('h2', flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('raafirivero-mason.admin.titles.fields')), m('.Mason-Container', [m('.js-fields-container', fieldsList), _components_FieldEdit__WEBPACK_IMPORTED_MODULE_3__["default"].component({
       key: 'new',
       field: null
-    })]), m('h2', flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('raafirivero-mason.admin.titles.settings')), _components_MasonSettings__WEBPACK_IMPORTED_MODULE_6__["default"].component()]);
+    })])]);
   };
 
   _proto.updateSort = function updateSort(sorting) {

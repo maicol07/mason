@@ -59,6 +59,10 @@ export default class MasonFieldsPane extends Component {
 
         return m('.container', [
 
+
+            m('h2', app.translator.trans('raafirivero-mason.admin.titles.settings')),
+            MasonSettings.component(),
+
             m('h2', app.translator.trans('raafirivero-mason.admin.titles.fields')),
             m('.Mason-Container', [
                 m('.js-fields-container', fieldsList),
@@ -68,8 +72,6 @@ export default class MasonFieldsPane extends Component {
                 }),
             ]),
 
-            m('h2', app.translator.trans('raafirivero-mason.admin.titles.settings')),
-            MasonSettings.component(),
             
 
             
