@@ -1,6 +1,6 @@
 <?php
 
-namespace Flagrow\Mason;
+namespace RaafiRivero\Mason;
 
 use Carbon\Carbon;
 use Flarum\Core\Discussion;
@@ -21,7 +21,7 @@ class Answer extends AbstractModel
 {
     public $timestamps = true;
 
-    protected $table = 'flagrow_mason_answers';
+    protected $table = 'raafirivero_mason_answers';
 
     protected $casts = [
         'is_suggested' => 'boolean',

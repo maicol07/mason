@@ -3,6 +3,7 @@ import icon from 'flarum/helpers/icon';
 import Component from 'flarum/Component';
 import Button from 'flarum/components/Button';
 import AnswerEdit from './AnswerEdit';
+import sortable from 'html5sortable/dist/html5sortable.es.js';
 import sortByAttribute from './../../lib/helpers/sortByAttribute';
 
 export default class FieldAnswersEdit extends Component {
@@ -14,24 +15,26 @@ export default class FieldAnswersEdit extends Component {
     }
 
     config() {
-        this.$('.js-answers-container')
-            .sortable({
-                handle: '.js-answer-handle',
-            })
-            .on('sortupdate', () => {
-                const sorting = this.$('.js-answer-data')
-                    .map(function () {
-                        return $(this).data('id');
-                    })
-                    .get();
+        let self = this;
 
-                this.updateSort(sorting);
+        sortable('.js-answers-container', {
+            handle: '.js-answers-handle',
+            items: '.js-answers-data',
+        }).forEach(function (el) {
+            $(el).off('sortupdate').on('sortupdate', e => {
+                const sorting = e.detail.destination.items
+                    .map(item => {
+                        return $(item).data('id');
+                    });
+
+                self.updateSort(sorting);
             });
+        });
     }
 
     view() {
         if (!this.field.exists) {
-            return m('div', app.translator.trans('flagrow-mason.admin.fields.save-field-for-answers'));
+            return m('div', app.translator.trans('raafirivero-mason.admin.fields.save-field-for-answers'));
         }
 
         let suggestedAnswers = [];
@@ -67,7 +70,7 @@ export default class FieldAnswersEdit extends Component {
                         this.showUserAnswers = !this.showUserAnswers;
                     },
                 }, [
-                    m('.Mason-Box-Header-Title', app.translator.trans('flagrow-mason.admin.buttons.show-user-answers', {
+                    m('.Mason-Box-Header-Title', app.translator.trans('raafirivero-mason.admin.buttons.show-user-answers', {
                         count: userAnswers.length,
                     })),
                     m('div', [
@@ -91,14 +94,14 @@ export default class FieldAnswersEdit extends Component {
                         oninput: m.withAttr('value', value => {
                             this.new_content = value;
                         }),
-                        placeholder: app.translator.trans('flagrow-mason.admin.fields.new-answer-placeholder'),
+                        placeholder: app.translator.trans('raafirivero-mason.admin.fields.new-answer-placeholder'),
                     }),
                 ]),
                 m('.Form-group', [
                     Button.component({
                         type: 'submit',
                         className: 'Button Button--primary',
-                        children: app.translator.trans('flagrow-mason.admin.buttons.add-answer'),
+                        children: app.translator.trans('raafirivero-mason.admin.buttons.add-answer'),
                         loading: this.processing,
                         disabled: !this.new_content,
                         onclick: this.saveField.bind(this),

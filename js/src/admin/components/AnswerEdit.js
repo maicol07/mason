@@ -15,7 +15,7 @@ export default class FieldEdit extends Component {
         return m('form.Mason-Box', [
             // Only suggested answers can be reordered
             (this.answer.is_suggested() ? [
-                m('span.fa.fa-arrows.Mason-Box--handle.js-answer-handle'),
+                m('span.fa.fa-arrows-alt-v.Mason-Box--handle.js-answer-handle'),
                 ' ',
             ] : null),
             m('span', {
@@ -40,13 +40,13 @@ export default class FieldEdit extends Component {
                     // And the unsaved state won't be preserved because the AnswerEdit component changes its place
                     this.saveAnswer();
                 },
-                children: app.translator.trans('flagrow-mason.admin.fields.is_suggested'),
+                children: app.translator.trans('raafirivero-mason.admin.fields.is_suggested'),
             }),
             m('.ButtonGroup', [
                 Button.component({
                     type: 'submit',
                     className: 'Button Button--primary',
-                    children: app.translator.trans('flagrow-mason.admin.buttons.save-answer'),
+                    children: app.translator.trans('raafirivero-mason.admin.buttons.save-answer'),
                     loading: this.processing,
                     disabled: !this.readyToSave(),
                     onclick: this.saveAnswer.bind(this),
@@ -54,7 +54,7 @@ export default class FieldEdit extends Component {
                 Button.component({
                     type: 'submit',
                     className: 'Button Button--danger',
-                    children: app.translator.trans('flagrow-mason.admin.buttons.delete-answer'),
+                    children: app.translator.trans('raafirivero-mason.admin.buttons.delete-answer'),
                     loading: this.processing,
                     onclick: this.deleteAnswer.bind(this),
                 }),
@@ -90,7 +90,7 @@ export default class FieldEdit extends Component {
     }
 
     deleteAnswer() {
-        if (!confirm(app.translator.trans('flagrow-mason.admin.messages.delete-answer-confirmation', {
+        if (!confirm(app.translator.trans('raafirivero-mason.admin.messages.delete-answer-confirmation', {
                 content: this.answer.content(),
             }))) {
             return;

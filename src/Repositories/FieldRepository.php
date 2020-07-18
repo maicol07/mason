@@ -1,10 +1,10 @@
 <?php
 
-namespace Flagrow\Mason\Repositories;
+namespace RaafiRivero\Mason\Repositories;
 
-use Flagrow\Mason\Answer;
-use Flagrow\Mason\Field;
-use Flagrow\Mason\Validators\FieldValidator;
+use RaafiRivero\Mason\Answer;
+use RaafiRivero\Mason\Field;
+use RaafiRivero\Mason\Validators\FieldValidator;
 use Flarum\Core\User;
 use Illuminate\Cache\Repository;
 use Illuminate\Support\Arr;

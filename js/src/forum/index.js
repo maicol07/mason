@@ -4,20 +4,22 @@ import Discussion from 'flarum/models/Discussion';
 import Forum from 'flarum/models/Forum';
 import Answer from './../lib/models/Answer';
 import Field from './../lib/models/Field';
+import ByTag from './../lib/models/ByTag';
 import addComposerFields from './addComposerFields';
 import addFieldUpdateControl from './addFieldUpdateControl';
 import addFieldsOnDiscussionHero from './addFieldsOnDiscussionHero';
 import addFieldsOnDiscussionPost from './addFieldsOnDiscussionPost';
 import patchModelIdentifier from "./patchModelIdentifier";
 
-app.initializers.add('flagrow-mason', app => {
-    app.store.models['flagrow-mason-field'] = Field;
-    app.store.models['flagrow-mason-answer'] = Answer;
+app.initializers.add('raafirivero-mason', app => {
+    app.store.models['raafirivero-mason-field'] = Field;
+    app.store.models['raafirivero-mason-answer'] = Answer;
+    app.store.models['raafirivero-mason-bytag'] = ByTag;
 
-    Discussion.prototype.flagrowMasonAnswers = Model.hasMany('flagrowMasonAnswers');
-    Discussion.prototype.canSeeFlagrowMasonAnswers = Model.attribute('canSeeFlagrowMasonAnswers');
-    Discussion.prototype.canUpdateFlagrowMasonAnswers = Model.attribute('canUpdateFlagrowMasonAnswers');
-    Forum.prototype.canFillFlagrowMasonFields = Model.attribute('canFillFlagrowMasonFields');
+    Discussion.prototype.raafiriveroMasonAnswers = Model.hasMany('raafiriveroMasonAnswers');
+    Discussion.prototype.canSeeRaafiRiveroMasonAnswers = Model.attribute('canSeeRaafiRiveroMasonAnswers');
+    Discussion.prototype.canUpdateRaafiRiveroMasonAnswers = Model.attribute('canUpdateRaafiRiveroMasonAnswers');
+    Forum.prototype.canFillRaafiRiveroMasonFields = Model.attribute('canFillRaafiRiveroMasonFields');
 
     addComposerFields();
     addFieldsOnDiscussionHero();

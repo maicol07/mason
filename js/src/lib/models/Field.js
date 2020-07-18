@@ -23,6 +23,6 @@ export default class Field extends mixin(Model, {
      * @inheritDoc
      */
     apiEndpoint() {
-        return '/flagrow/mason/fields' + (this.exists ? '/' + this.data.id : '');
+        return '/raafirivero/mason/fields' + (this.exists ? '/' + this.data.id : '');
     }
 }

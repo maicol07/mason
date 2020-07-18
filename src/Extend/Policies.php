@@ -1,10 +1,10 @@
 <?php
 
-namespace Flagrow\Mason\Extend;
+namespace RaafiRivero\Mason\Extend;
 
-use Flagrow\Mason\Access\AnswerPolicy;
-use Flagrow\Mason\Access\DiscussionPolicy;
-use Flagrow\Mason\Access\FieldPolicy;
+use RaafiRivero\Mason\Access\AnswerPolicy;
+use RaafiRivero\Mason\Access\DiscussionPolicy;
+use RaafiRivero\Mason\Access\FieldPolicy;
 use Flarum\Extend\ExtenderInterface;
 use Flarum\Extension\Extension;
 use Illuminate\Contracts\Container\Container;

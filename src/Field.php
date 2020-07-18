@@ -1,6 +1,6 @@
 <?php
 
-namespace Flagrow\Mason;
+namespace RaafiRivero\Mason;
 
 use Carbon\Carbon;
 use Flarum\Database\AbstractModel;
@@ -28,7 +28,7 @@ class Field extends AbstractModel
 
     public $timestamps = true;
 
-    protected $table = 'flagrow_mason_fields';
+    protected $table = 'raafirivero_mason_fields';
 
     protected $casts = [
         'min_answers_count' => 'integer',
@@ -60,6 +60,14 @@ class Field extends AbstractModel
         'icon',
         'sort',
     ];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function bytag()
+    {
+        return $this->belongsToMany(ByTag::class);
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
